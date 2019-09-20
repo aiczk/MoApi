@@ -1,4 +1,5 @@
-﻿using MagicOnion;
+﻿using System.Threading.Tasks;
+using MagicOnion;
 using ServerShared.MessagePackObject;
 // ReSharper disable CheckNamespace
 
@@ -11,11 +12,8 @@ namespace ServerShared.Unary
 
     public interface IMatchMakeService : IService<IMatchMakeService>
     {
-        UnaryResult<string> RequireMatchName();
-    }
-
-    public interface IWorldService : IService<IWorldService>
-    {
-        UnaryResult<bool> RegisterWorld(PlayerIdentifier playerIdentifier);
+        UnaryResult<string> RequireMatch(PlayerIdentifier playerIdentifier);
+        Task<ServerStreamingResult<(string, int)>> NewMatch();
+        UnaryResult<bool> RegisterMatch((string, int) matchData);
     }
 }

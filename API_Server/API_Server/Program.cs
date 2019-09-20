@@ -1,4 +1,5 @@
 ﻿using System;
+using API_Server.Script.Utility;
 using Grpc.Core;
 using Grpc.Core.Logging;
 using MagicOnion.Server;
@@ -13,6 +14,7 @@ namespace API_Server
         private static void Main()
         {
             GrpcEnvironment.SetLogger(new ConsoleLogger());
+            Console.WriteLine(Utils.GUID);
             
             server = new Server
             {
