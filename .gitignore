@@ -1,0 +1,10 @@
+*.sln
+API_Server/.idea/
+*.csproj
+API_Server/API_Server/bin/
+API_Server/API_Server/obj/
+MO-API/.idea/
+MO-API/Assets/Plugins/
+MO-API/Assets/Scripts/
+MO-API/Library/
+MO-API/Temp/
