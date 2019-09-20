@@ -21,7 +21,7 @@ namespace API_Server.Script.Unary
             var (name, count) = matchData;
             return UnaryResult(matches.TryAdd(name, count));
         }
-
+        
         public async Task<ServerStreamingResult<(string, int)>> NewMatch()
         {
             var stream = GetServerStreamingContext<(string, int)>();
@@ -32,8 +32,6 @@ namespace API_Server.Script.Unary
         //空きが存在していなければ作成。
         //空きが存在していれば入室。
         //4人になったら削除。
-        //how to 同期
-        //Unary中にStreamingする。
         private async ValueTask<string> GetMatch()
         {
             string name = null;

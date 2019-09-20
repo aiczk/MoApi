@@ -14,7 +14,6 @@ namespace API_Server
         private static void Main()
         {
             GrpcEnvironment.SetLogger(new ConsoleLogger());
-            Console.WriteLine(Utils.GUID);
             
             server = new Server
             {
