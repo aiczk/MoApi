@@ -34,5 +34,14 @@ namespace ServerShared.MessagePackObject
         [Key(1)]
         public Quaternion rotation { get; set; }
     }
-   
+
+    [MessagePackObject]
+    public class MatchData
+    {
+        [Key(0)]
+        public string roomName { get; set; }
+        
+        [Key(1)]
+        public int count { get; set; }
+    }
 }

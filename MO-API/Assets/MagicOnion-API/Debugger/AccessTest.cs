@@ -19,7 +19,7 @@ namespace Debugger
         public override UniTask Connect(Channel channel)
         {
             accessControlHub = StreamingHubClient.Connect<IAccessControlHub, IAccessControlReceiver>(channel, this);
-            return base.Connect(channel);
+            return UniTask.CompletedTask;
         }
 
         private void Awake()

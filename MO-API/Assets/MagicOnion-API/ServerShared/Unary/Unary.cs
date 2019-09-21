@@ -13,8 +13,8 @@ namespace ServerShared.Unary
 
     public interface IMatchMakeService : IService<IMatchMakeService>
     {
-        UnaryResult<string> RequireMatch(PlayerIdentifier playerIdentifier);
-        Task<ServerStreamingResult<string>> NewMatch();
-        UnaryResult<bool> RegisterMatch(string matchName);
+        UnaryResult<string> RequireMatch();
+        Task<ServerStreamingResult<MatchData>> NewMatch();
+        UnaryResult<bool> RegisterMatch(MatchData matchData);
     }
 }

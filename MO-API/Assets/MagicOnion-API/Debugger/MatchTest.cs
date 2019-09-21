@@ -16,32 +16,30 @@ namespace Debugger
         [SerializeField] private Button requireMatch = default;
         
         private IMatchMakeService matchMakeService;
-        private bool flag = true;
     
         public override UniTask Connect(Channel channel)
         {
             matchMakeService = MagicOnionClient.Create<IMatchMakeService>(channel);
-            Debug.Log("done");
             return UniTask.CompletedTask;
-        }
-
-        public override UniTask DisConnect()
-        {
-            flag = false;
-            return base.DisConnect();
         }
 
         //一定時間待って、人が入ってこなかったら更新をかける。
         private void Awake()
         {
+            var click =
             requireMatch
                 .OnClickAsObservable()
+                .Share();
+
+            click
                 .Subscribe(async x =>
-                    {
-                        var roomName = await matchMakeService.RequireMatch(PlayerInfo.Instance.PlayerIdentifier);
-                        Debug.Log(roomName);
-                        await ObserveNewMatch();
-                    });
+                {
+                    var roomName = await matchMakeService.RequireMatch();
+                    Debug.Log(roomName);
+                });
+
+            click
+                .Subscribe(async x => await ObserveNewMatch());
         }
 
         private async UniTask ObserveNewMatch()
@@ -50,10 +48,10 @@ namespace Debugger
                 
             await data
                   .ResponseStream
-                  .ForEachAsync(async roomName =>
+                  .ForEachAsync(async matchData =>
                   {
-                      Debug.Log($"RoomName :{roomName}");
-                      await matchMakeService.RegisterMatch(roomName);
+                      Debug.Log($"NewMatchName :{matchData.roomName}");
+                      await matchMakeService.RegisterMatch(matchData);
                   });
         }
     }
