@@ -3,6 +3,7 @@ using API_Server.Script.Utility;
 using Grpc.Core;
 using Grpc.Core.Logging;
 using MagicOnion.Server;
+using MessagePack.Resolvers;
 
 namespace API_Server
 {
@@ -13,6 +14,22 @@ namespace API_Server
 
         private static void Main()
         {
+            CompositeResolver.RegisterAndSetAsDefault
+            (
+                StandardResolverAllowPrivate.Instance,
+                MessagePack.Unity.UnityResolver.Instance,
+                BuiltinResolver.Instance,
+                AttributeFormatterResolver.Instance,
+// replace enum resolver
+                DynamicEnumAsStringResolver.Instance,
+                DynamicGenericResolver.Instance,
+                DynamicUnionResolver.Instance,
+                DynamicObjectResolver.Instance,
+                PrimitiveObjectResolver.Instance,
+// final fallback(last priority)
+                StandardResolver.Instance
+            );
+            
             GrpcEnvironment.SetLogger(new ConsoleLogger());
             
             server = new Server

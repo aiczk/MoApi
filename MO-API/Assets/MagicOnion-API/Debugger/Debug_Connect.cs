@@ -1,4 +1,5 @@
 ﻿using Info;
+using MessagePack.Resolvers;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,7 +17,7 @@ namespace Debugger
                 .Subscribe(async x =>
                 {
                     Debug.Log("Connect"); 
-                    var channel = await ChannelInfo.Connect("localhost:12345");
+                    var channel = await ChannelInfo.Connect("localhost:10000");
                     await ConnectorInfo.Connect(channel);
                 });
 

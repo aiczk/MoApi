@@ -34,4 +34,5 @@ namespace ServerShared.MessagePackObject
         [Key(1)]
         public Quaternion rotation { get; set; }
     }
+   
 }

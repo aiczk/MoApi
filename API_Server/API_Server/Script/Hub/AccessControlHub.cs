@@ -28,7 +28,7 @@ namespace API_Server.Script.Hub
             (room, storage) = await Group.AddAsync(roomName, playerIdentifier);
 
             self = playerIdentifier;
-            BroadcastExceptSelf(room).Join(playerIdentifier);
+            Broadcast(room).Join(playerIdentifier);
             Players = storage.AllValues;
             
             join.OnNext(roomName);
@@ -39,7 +39,7 @@ namespace API_Server.Script.Hub
             await room.RemoveAsync(Context);
             
             leave.OnNext(Context);
-            BroadcastExceptSelf(room).Leave(self);
+            Broadcast(room).Leave(self);
 
             Players = null;
         }

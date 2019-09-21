@@ -21,6 +21,7 @@ namespace Debugger
         public override UniTask Connect(Channel channel)
         {
             matchMakeService = MagicOnionClient.Create<IMatchMakeService>(channel);
+            Debug.Log("done");
             return UniTask.CompletedTask;
         }
 
@@ -30,36 +31,30 @@ namespace Debugger
             return base.DisConnect();
         }
 
-        private async UniTask Awake()
-        {
-            await UniTask.WaitUntil(() => matchMakeService == null);
-
-            while (flag)
-            {
-                var data = await matchMakeService.NewMatch();
-                
-                await data
-                      .ResponseStream
-                      .ForEachAsync(async matchData =>
-                      {
-                          Debug.Log($"RoomName :{matchData.Item1} Count :{matchData.Item2.ToString()}");
-                          await matchMakeService.RegisterMatch(matchData);
-                      });
-            }
-        }
-
-        private void Start()
+        //一定時間待って、人が入ってこなかったら更新をかける。
+        private void Awake()
         {
             requireMatch
                 .OnClickAsObservable()
                 .Subscribe(async x =>
                     {
-                        await matchMakeService.RequireMatch(new PlayerIdentifier
-                        {
-                            id = "TEST",
-                            name = "TEST PLAYER"
-                        });
+                        var roomName = await matchMakeService.RequireMatch(PlayerInfo.Instance.PlayerIdentifier);
+                        Debug.Log(roomName);
+                        await ObserveNewMatch();
                     });
+        }
+
+        private async UniTask ObserveNewMatch()
+        {
+            var data = await matchMakeService.NewMatch();
+                
+            await data
+                  .ResponseStream
+                  .ForEachAsync(async roomName =>
+                  {
+                      Debug.Log($"RoomName :{roomName}");
+                      await matchMakeService.RegisterMatch(roomName);
+                  });
         }
     }
 }

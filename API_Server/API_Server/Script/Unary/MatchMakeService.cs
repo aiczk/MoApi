@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using API_Server.Script.Utility;
 using MagicOnion;
@@ -16,16 +17,16 @@ namespace API_Server.Script.Unary
 
         public async UnaryResult<string> RequireMatch(PlayerIdentifier playerIdentifier) => await GetMatch();
 
-        public UnaryResult<bool> RegisterMatch((string, int) matchData)
+        public UnaryResult<bool> RegisterMatch(MatchData matchData)
         {
-            var (name, count) = matchData;
-            return UnaryResult(matches.TryAdd(name, count));
+            return UnaryResult(matches.TryAdd(matchData.roomName, matchData.count));
         }
         
-        public async Task<ServerStreamingResult<(string, int)>> NewMatch()
+        public async Task<ServerStreamingResult<string>> NewMatch()
         {
-            var stream = GetServerStreamingContext<(string, int)>();
-            await stream.WriteAsync((roomNameCache, 1));
+            DeleteZeroOrMax();
+            var stream = GetServerStreamingContext<string>();
+            await stream.WriteAsync(roomNameCache);
             return stream.Result();
         }
 
@@ -54,7 +55,21 @@ namespace API_Server.Script.Unary
                 await NewMatch();
             }
 
+            matches[name]++;
             return name;
+        }
+
+        private void DeleteZeroOrMax()
+        {
+            foreach (var match in matches)
+            {
+                var (roomName, count) = match;
+
+                if (count != 0 && count != 4)
+                    continue;
+                
+                matches.Remove(roomName);
+            }
         }
     }
 }
