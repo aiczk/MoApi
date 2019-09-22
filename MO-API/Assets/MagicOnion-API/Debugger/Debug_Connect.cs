@@ -1,4 +1,4 @@
-﻿using Info;
+﻿using MagicOnion.API;
 using MessagePack.Resolvers;
 using UniRx;
 using UnityEngine;
@@ -18,7 +18,7 @@ namespace Debugger
                 {
                     Debug.Log("Connect"); 
                     var channel = await ChannelInfo.Connect("localhost:10000");
-                    await ConnectorInfo.Connect(channel);
+                    ConnectorInfo.Connect(channel);
                 });
 
             disconnect

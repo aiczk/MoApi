@@ -2,9 +2,7 @@
 using UniRx.Async;
 using UnityEngine;
 
-#pragma warning disable 1998
-
-namespace Info
+namespace MagicOnion.API
 {
     public class ChannelInfo : MonoBehaviour
     {

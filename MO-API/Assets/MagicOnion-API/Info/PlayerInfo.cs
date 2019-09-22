@@ -2,7 +2,7 @@
 using ServerShared.MessagePackObject;
 using UnityEngine;
 
-namespace Info
+namespace MagicOnion.API
 {
     public class PlayerInfo : SingletonMonoBehaviour<PlayerInfo>
     {

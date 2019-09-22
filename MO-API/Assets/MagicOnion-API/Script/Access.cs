@@ -1,6 +1,6 @@
 ﻿using System;
 using Grpc.Core;
-using Info;
+using MagicOnion.API;
 using MagicOnion.Client;
 using ServerShared.Hub;
 using ServerShared.MessagePackObject;
@@ -18,12 +18,16 @@ namespace MagicOnion.API
         private IAccessControlHub accessControlHub;
         private bool isJoin;
         
-        public override UniTask Connect(Channel channel)
+        public override void Connect(Channel channel)
         {
             accessControlHub = StreamingHubClient.Connect<IAccessControlHub, IAccessControlReceiver>(channel, this);
-            return UniTask.CompletedTask;
         }
-        
+
+        public override async UniTask DisConnect()
+        {
+            await accessControlHub.DisposeAsync();
+        }
+
         void IAccessControlReceiver.Join(PlayerIdentifier playerIdentifier) => join.OnNext(playerIdentifier);
         void IAccessControlReceiver.Leave(PlayerIdentifier playerIdentifier) => leave.OnNext(playerIdentifier);
 

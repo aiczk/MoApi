@@ -1,5 +1,5 @@
 ﻿using Grpc.Core;
-using Info;
+using MagicOnion.API;
 using MagicOnion.Client;
 using ServerShared.Unary;
 using UniRx.Async;
@@ -12,10 +12,9 @@ namespace MagicOnion.API
         private IMatchMakeService matchMakeService;
         private bool isJoin;
         
-        public override UniTask Connect(Channel channel)
+        public override void Connect(Channel channel)
         {
             matchMakeService = MagicOnionClient.Create<IMatchMakeService>(channel);
-            return UniTask.CompletedTask;
         }
 
         public async UniTask<string> Require()
@@ -39,6 +38,14 @@ namespace MagicOnion.API
             
             await matchMakeService.LeaveMatch(matchName);
             isJoin = false;
+        }
+
+        public async UniTask<int> Count(string matchName)
+        {
+            if (!isJoin)
+                return 0;
+
+            return await matchMakeService.MatchCount(matchName);
         }
     }
 }

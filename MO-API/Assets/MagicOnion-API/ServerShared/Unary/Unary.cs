@@ -15,11 +15,8 @@ namespace ServerShared.Unary
     public interface IMatchMakeService : IService<IMatchMakeService>
     {
         UnaryResult<string> RequireMatch();
-        
-        //Task<ServerStreamingResult<MatchData>> NewMatch();
-        //Task<ServerStreamingResult<MatchData>> UpdateMatch();
-
         UnaryResult<Nil> JoinMatch(string matchName);
         UnaryResult<Nil> LeaveMatch(string matchName);
+        UnaryResult<int> MatchCount(string matchName);
     }
 }

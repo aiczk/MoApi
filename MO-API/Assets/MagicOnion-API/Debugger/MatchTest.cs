@@ -1,12 +1,5 @@
-﻿using Grpc.Core;
-using Info;
-using MagicOnion;
-using MagicOnion.API;
-using MagicOnion.Client;
-using ServerShared.MessagePackObject;
-using ServerShared.Unary;
+﻿using MagicOnion.API;
 using UniRx;
-using UniRx.Async;
 using UnityEngine;
 using UnityEngine.UI;
 

@@ -34,7 +34,9 @@ namespace API_Server.Script.Unary
             
             return UnaryResult(Nil.Default);
         }
-        
+
+        public UnaryResult<int> MatchCount(string matchName) => UnaryResult(matches[matchName]);
+
         public UnaryResult<string> RequireMatch()
         {
             RemoveZeroOrMax();
