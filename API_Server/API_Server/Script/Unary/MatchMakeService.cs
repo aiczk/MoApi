@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reactive;
+using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading.Tasks;
 using API_Server.Script.Utility;
 using MagicOnion;
 using MagicOnion.Server;
+using MessagePack;
 using Reactive.Bindings;
 using ServerShared.MessagePackObject;
 using ServerShared.Unary;
@@ -16,38 +18,72 @@ namespace API_Server.Script.Unary
     {
         //部屋名 接続人数
         private static Dictionary<string, int> matches = new Dictionary<string, int>();
-        private static ReactiveProperty<string> roomNameCache = new ReactiveProperty<string>("lol");
+        private static Subject<string> newMatchSubject = new Subject<string>();
+        private static Subject<Unit> updateMatchSubject = new Subject<Unit>();
+        private static MatchData matchCache = new MatchData();
+        
         private AsyncSubject<Unit> completeMatchMaking = new AsyncSubject<Unit>();
         private ServerStreamingContext<MatchData> stream;
         
-        public UnaryResult<string> RequireMatch() => UnaryResult(GetMatch());
-        public UnaryResult<bool> RegisterMatch(MatchData matchData) => 
-            UnaryResult(matches.TryAdd(matchData.roomName, matchData.count));
+        
+        public UnaryResult<Nil> JoinMatch(string matchName)
+        {
+            matchCache.roomName = matchName;
+            matchCache.count = matches[matchName]++;
+            
+            Logger.Debug(matchCache.count.ToString());
+            
+            updateMatchSubject.OnNext(default);
+            return UnaryResult(Nil.Default);
+        }
 
+        public  UnaryResult<Nil> LeaveMatch()
+        {
+            matchCache.count = --matches[matchCache.roomName];
+            
+            Logger.Debug(matchCache.count.ToString());
+
+            updateMatchSubject.OnNext(default);
+            return UnaryResult(Nil.Default);
+        }
+
+        
         public async Task<ServerStreamingResult<MatchData>> NewMatch()
-        { 
+        {
             stream = GetServerStreamingContext<MatchData>();
 
-            roomNameCache
-                .Subscribe(async roomName =>
+            newMatchSubject
+                .Subscribe(async newMatchName =>
                 {
-                    DeleteZeroOrMax();
-                    await stream.WriteAsync(new MatchData {roomName = roomName, count = 1});
-                    Logger.Debug(roomName);
+                    RemoveZeroOrMax();
+                    await stream.WriteAsync(new MatchData(newMatchName, 1));
                 });
             
             await completeMatchMaking;
-            Logger.Debug("DONE");
-
             return stream.Result();
         }
 
-        //空きが存在していなければ作成。
-        //空きが存在していれば入室。
-        //4人になったら削除。
+        public async Task<ServerStreamingResult<MatchData>> UpdateMatch()
+        {
+            stream = GetServerStreamingContext<MatchData>();
+            
+            updateMatchSubject
+                .Subscribe(async _ => await stream.WriteAsync(matchCache));
+            
+            await completeMatchMaking;
+            return stream.Result();
+        }
+        
+        public UnaryResult<string> RequireMatch() => UnaryResult(GetMatch());
+        
+        public UnaryResult<bool> RegisterMatch(MatchData matchData) => 
+            UnaryResult(matches.TryAdd(matchData.roomName, matchData.count));
+
+        #region Utils
+        
         private string GetMatch()
         {
-            var name = "";
+            string matchName = null;
             foreach (var match in matches)
             {
                 var (roomName, count) = match;
@@ -55,31 +91,33 @@ namespace API_Server.Script.Unary
                 if(count >= 4)
                     continue;
                 
-                name = roomName;
+                matchName = roomName;
                 break;
             }
-
-            if (!string.IsNullOrEmpty(name)) 
-                return name;
             
-            name = Utils.GUID;
-            roomNameCache.Value = name;
-            matches.Add(name, 1);
+            if (!string.IsNullOrEmpty(matchName)) 
+                return matchName;
             
-            return name;
+            matchName = Utils.GUID;
+            newMatchSubject.OnNext(matchName);
+            matches.Add(matchName, 1);
+            
+            return matchName;
         }
 
-        private void DeleteZeroOrMax()
+        private static void RemoveZeroOrMax()
         {
             foreach (var match in matches)
             {
                 var (roomName, count) = match;
-
+                
                 if (count != 0 && count != 4)
                     continue;
                 
                 matches.Remove(roomName);
             }
         }
+        
+        #endregion
     }
 }

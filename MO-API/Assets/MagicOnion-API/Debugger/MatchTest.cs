@@ -13,9 +13,10 @@ namespace Debugger
 {
     public class MatchTest : ChannelBehaviour
     {
-        [SerializeField] private Button requireMatch = default;
+        [SerializeField] private Button requireMatch = default, joinMatch = default, leaveMatch = default;
         
         private IMatchMakeService matchMakeService;
+        private string roomName = default;
     
         public override UniTask Connect(Channel channel)
         {
@@ -33,13 +34,27 @@ namespace Debugger
 
             click
                 .Subscribe(async x =>
-                {
-                    var roomName = await matchMakeService.RequireMatch();
+                { 
+                    roomName = await matchMakeService.RequireMatch();
                     Debug.Log(roomName);
                 });
 
             click
-                .Subscribe(async x => await ObserveNewMatch());
+                .Subscribe(async x =>
+                {
+                    var observeNew = ObserveNewMatch();
+                    var observeUpdate = ObserveUpdateMatch();
+
+                    await UniTask.WhenAll(observeNew, observeUpdate);
+                });
+
+            joinMatch
+                .OnClickAsObservable()
+                .Subscribe(async x => await matchMakeService.JoinMatch(roomName));
+
+            leaveMatch
+                .OnClickAsObservable()
+                .Subscribe(async x => await matchMakeService.LeaveMatch());
         }
 
         private async UniTask ObserveNewMatch()
@@ -52,6 +67,19 @@ namespace Debugger
                   {
                       Debug.Log($"NewMatchName :{matchData.roomName}");
                       await matchMakeService.RegisterMatch(matchData);
+                  });
+        }
+
+        private async UniTask ObserveUpdateMatch()
+        {
+            var data = await matchMakeService.UpdateMatch();
+
+            await data
+                  .ResponseStream
+                  .ForEachAsync(async newMatchData =>
+                  {
+                      Debug.Log($"UpdateMatchName :{newMatchData.roomName} Count :{newMatchData.count.ToString()}");
+                      await matchMakeService.RegisterMatch(newMatchData);
                   });
         }
     }

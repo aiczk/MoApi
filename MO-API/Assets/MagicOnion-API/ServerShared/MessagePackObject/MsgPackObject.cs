@@ -43,5 +43,17 @@ namespace ServerShared.MessagePackObject
         
         [Key(1)]
         public int count { get; set; }
+        
+        public MatchData(string roomName, int count)
+        {
+            this.roomName = roomName;
+            this.count = count;
+        }
+
+        public MatchData()
+        {
+            roomName = default;
+            count = default;
+        }
     }
 }

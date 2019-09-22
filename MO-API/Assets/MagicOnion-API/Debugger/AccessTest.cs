@@ -37,7 +37,6 @@ namespace Debugger
                 {
                     await accessControlHub.LeaveAsync();
                 });
-
         }
 
         void IAccessControlReceiver.Join(PlayerIdentifier playerIdentifier)
