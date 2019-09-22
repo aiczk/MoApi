@@ -16,8 +16,9 @@ namespace Debugger
         [SerializeField] private Button requireMatch = default, joinMatch = default, leaveMatch = default;
         
         private IMatchMakeService matchMakeService;
-        private string roomName = default;
-    
+        private string matchName = default;
+        private bool isJoin;
+        
         public override UniTask Connect(Channel channel)
         {
             matchMakeService = MagicOnionClient.Create<IMatchMakeService>(channel);
@@ -35,8 +36,8 @@ namespace Debugger
             click
                 .Subscribe(async x =>
                 { 
-                    roomName = await matchMakeService.RequireMatch();
-                    Debug.Log(roomName);
+                    matchName = await matchMakeService.RequireMatch();
+                    Debug.Log(matchName);
                 });
 
             click
@@ -50,11 +51,21 @@ namespace Debugger
 
             joinMatch
                 .OnClickAsObservable()
-                .Subscribe(async x => await matchMakeService.JoinMatch(roomName));
+                .Where(x => !isJoin)
+                .Subscribe(async x =>
+                {
+                    await matchMakeService.JoinMatch(matchName);
+                    isJoin = true;
+                });
 
             leaveMatch
                 .OnClickAsObservable()
-                .Subscribe(async x => await matchMakeService.LeaveMatch());
+                .Where(x => isJoin)
+                .Subscribe(async x =>
+                {
+                    await matchMakeService.LeaveMatch(matchName);
+                    isJoin = false;
+                });
         }
 
         private async UniTask ObserveNewMatch()

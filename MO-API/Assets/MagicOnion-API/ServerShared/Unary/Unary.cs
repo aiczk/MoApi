@@ -21,7 +21,7 @@ namespace ServerShared.Unary
         Task<ServerStreamingResult<MatchData>> UpdateMatch();
 
         UnaryResult<Nil> JoinMatch(string matchName);
-        UnaryResult<Nil> LeaveMatch();
+        UnaryResult<Nil> LeaveMatch(string matchName);
     }
     
     //入退室は鯖全体に広める必要がある。

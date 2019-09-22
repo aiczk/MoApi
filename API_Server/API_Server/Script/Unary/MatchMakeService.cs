@@ -20,34 +20,29 @@ namespace API_Server.Script.Unary
         private static Dictionary<string, int> matches = new Dictionary<string, int>();
         private static Subject<string> newMatchSubject = new Subject<string>();
         private static Subject<Unit> updateMatchSubject = new Subject<Unit>();
-        private static MatchData matchCache = new MatchData();
+        private static MatchData updateMatchCache = new MatchData();
         
         private AsyncSubject<Unit> completeMatchMaking = new AsyncSubject<Unit>();
         private ServerStreamingContext<MatchData> stream;
         
-        
         public UnaryResult<Nil> JoinMatch(string matchName)
         {
-            matchCache.roomName = matchName;
-            matchCache.count = matches[matchName]++;
-            
-            Logger.Debug(matchCache.count.ToString());
-            
+            updateMatchCache.roomName = matchName;
+            updateMatchCache.count = ++matches[matchName];
+
             updateMatchSubject.OnNext(default);
             return UnaryResult(Nil.Default);
         }
 
-        public  UnaryResult<Nil> LeaveMatch()
+        public UnaryResult<Nil> LeaveMatch(string matchName)
         {
-            matchCache.count = --matches[matchCache.roomName];
+            updateMatchCache.roomName = matchName;
+            updateMatchCache.count = --matches[matchName];
             
-            Logger.Debug(matchCache.count.ToString());
-
             updateMatchSubject.OnNext(default);
             return UnaryResult(Nil.Default);
         }
 
-        
         public async Task<ServerStreamingResult<MatchData>> NewMatch()
         {
             stream = GetServerStreamingContext<MatchData>();
@@ -55,8 +50,7 @@ namespace API_Server.Script.Unary
             newMatchSubject
                 .Subscribe(async newMatchName =>
                 {
-                    RemoveZeroOrMax();
-                    await stream.WriteAsync(new MatchData(newMatchName, 1));
+                    await stream.WriteAsync(new MatchData(newMatchName, 0));
                 });
             
             await completeMatchMaking;
@@ -68,7 +62,7 @@ namespace API_Server.Script.Unary
             stream = GetServerStreamingContext<MatchData>();
             
             updateMatchSubject
-                .Subscribe(async _ => await stream.WriteAsync(matchCache));
+                .Subscribe(async _ => await stream.WriteAsync(updateMatchCache));
             
             await completeMatchMaking;
             return stream.Result();
@@ -100,7 +94,7 @@ namespace API_Server.Script.Unary
             
             matchName = Utils.GUID;
             newMatchSubject.OnNext(matchName);
-            matches.Add(matchName, 1);
+            matches.Add(matchName, 0);
             
             return matchName;
         }
@@ -111,7 +105,7 @@ namespace API_Server.Script.Unary
             {
                 var (roomName, count) = match;
                 
-                if (count != 0 && count != 4)
+                if (count != -1 && count != 4)
                     continue;
                 
                 matches.Remove(roomName);
