@@ -1,5 +1,6 @@
 ﻿using Grpc.Core;
 using Info;
+using MagicOnion.API;
 using MagicOnion.Client;
 using ServerShared.Hub;
 using ServerShared.MessagePackObject;
@@ -10,43 +11,43 @@ using UnityEngine.UI;
 
 namespace Debugger
 {
-    public class AccessTest : ChannelBehaviour,IAccessControlReceiver
+    public class AccessTest : MonoBehaviour
     {
         [SerializeField] private Button join = default, leave = default;
 
-        private IAccessControlHub accessControlHub;
+        private Access access;
         
-        public override UniTask Connect(Channel channel)
-        {
-            accessControlHub = StreamingHubClient.Connect<IAccessControlHub, IAccessControlReceiver>(channel, this);
-            return UniTask.CompletedTask;
-        }
-
         private void Awake()
         {
+            access = GetComponent<Access>();
+            
             join
                 .OnClickAsObservable()
                 .Subscribe(async _ =>
                 {
-                    await accessControlHub.JoinAsync("TestRoom", PlayerInfo.Instance.PlayerIdentifier);
+                    await access.Join("TestRoom", PlayerInfo.Instance.PlayerIdentifier);
                 });
 
             leave
                 .OnClickAsObservable()
                 .Subscribe(async _ =>
                 {
-                    await accessControlHub.LeaveAsync();
+                    await access.Leave();
                 });
-        }
 
-        void IAccessControlReceiver.Join(PlayerIdentifier playerIdentifier)
-        {
-            Debug.Log($"{playerIdentifier.name}が入室。");
-        }
+            access
+                .JoinAsObservable
+                .Subscribe(x =>
+                {
+                    Debug.Log($"{x.name}が入室しました。");
+                });
 
-        void IAccessControlReceiver.Leave(PlayerIdentifier playerIdentifier)
-        {
-            Debug.Log($"{playerIdentifier.name}が退室。");
+            access
+                .LeaveAsObservable
+                .Subscribe(x =>
+                {
+                    Debug.Log($"{x.name}が退室しました。");
+                });
         }
     }
 }

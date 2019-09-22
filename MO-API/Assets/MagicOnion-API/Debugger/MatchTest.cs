@@ -1,6 +1,7 @@
 ﻿using Grpc.Core;
 using Info;
 using MagicOnion;
+using MagicOnion.API;
 using MagicOnion.Client;
 using ServerShared.MessagePackObject;
 using ServerShared.Unary;
@@ -11,48 +12,38 @@ using UnityEngine.UI;
 
 namespace Debugger
 {
-    public class MatchTest : ChannelBehaviour
+    public class MatchTest : MonoBehaviour
     {
         [SerializeField] private Button requireMatch = default, joinMatch = default, leaveMatch = default;
-        
-        private IMatchMakeService matchMakeService;
-        private string matchName = default;
-        private bool isJoin;
-        
-        public override UniTask Connect(Channel channel)
-        {
-            matchMakeService = MagicOnionClient.Create<IMatchMakeService>(channel);
-            return UniTask.CompletedTask;
-        }
 
+        private Matching matching;
+        private string matchName = default;
+        
         //一定時間待って、人が入ってこなかったら更新をかける。
         private void Awake()
         {
+            matching = GetComponent<Matching>();
             var require = requireMatch.OnClickAsObservable().Share();
 
             require
                 .Subscribe(async x =>
-                { 
-                    matchName = await matchMakeService.RequireMatch();
+                {
+                    matchName = await matching.Require();
                     Debug.Log(matchName);
                 });
 
             joinMatch
                 .OnClickAsObservable()
-                .Where(x => !isJoin)
                 .Subscribe(async x =>
                 {
-                    await matchMakeService.JoinMatch(matchName);
-                    isJoin = true;
+                    await matching.Join(matchName);
                 });
 
             leaveMatch
                 .OnClickAsObservable()
-                .Where(x => isJoin)
                 .Subscribe(async x =>
                 {
-                    await matchMakeService.LeaveMatch(matchName);
-                    isJoin = false;
+                    await matching.Leave(matchName);
                 });
         }
     }
