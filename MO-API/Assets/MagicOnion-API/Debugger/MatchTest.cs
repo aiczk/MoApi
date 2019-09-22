@@ -28,25 +28,13 @@ namespace Debugger
         //一定時間待って、人が入ってこなかったら更新をかける。
         private void Awake()
         {
-            var click =
-            requireMatch
-                .OnClickAsObservable()
-                .Share();
+            var require = requireMatch.OnClickAsObservable().Share();
 
-            click
+            require
                 .Subscribe(async x =>
                 { 
                     matchName = await matchMakeService.RequireMatch();
                     Debug.Log(matchName);
-                });
-
-            click
-                .Subscribe(async x =>
-                {
-                    var observeNew = ObserveNewMatch();
-                    var observeUpdate = ObserveUpdateMatch();
-
-                    await UniTask.WhenAll(observeNew, observeUpdate);
                 });
 
             joinMatch
@@ -66,32 +54,6 @@ namespace Debugger
                     await matchMakeService.LeaveMatch(matchName);
                     isJoin = false;
                 });
-        }
-
-        private async UniTask ObserveNewMatch()
-        {
-            var data = await matchMakeService.NewMatch();
-                
-            await data
-                  .ResponseStream
-                  .ForEachAsync(async matchData =>
-                  {
-                      Debug.Log($"NewMatchName :{matchData.roomName}");
-                      await matchMakeService.RegisterMatch(matchData);
-                  });
-        }
-
-        private async UniTask ObserveUpdateMatch()
-        {
-            var data = await matchMakeService.UpdateMatch();
-
-            await data
-                  .ResponseStream
-                  .ForEachAsync(async newMatchData =>
-                  {
-                      Debug.Log($"UpdateMatchName :{newMatchData.roomName} Count :{newMatchData.count.ToString()}");
-                      await matchMakeService.RegisterMatch(newMatchData);
-                  });
         }
     }
 }
