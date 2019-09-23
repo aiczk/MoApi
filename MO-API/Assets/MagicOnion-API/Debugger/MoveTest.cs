@@ -1,6 +1,9 @@
-﻿using Grpc.Core;
+﻿using System;
+using Grpc.Core;
+using Info;
 using MagicOnion.API;
 using MagicOnion.Client;
+using Pool;
 using ServerShared.Hub;
 using ServerShared.MessagePackObject;
 using Unity.Burst;
@@ -13,13 +16,29 @@ namespace Debugger
 {
     public class MoveTest : MonoBehaviour
     {
+        [SerializeField] private IdentifierComponent prefab = default;
+        
         private TransformAccessArray transforms;
         private Movement movement;
+        private PlayerPool playerPool;
 
         private void Awake()
         {
             movement = GetComponent<Movement>();
-            transforms = new TransformAccessArray(4);
+            playerPool = new PlayerPool(prefab);
+            transforms = new TransformAccessArray(4, 2);
+
+            for (var i = 0; i < 4; i++)
+            {
+                var rent = playerPool.Rent();
+                rent.index = i;
+                transforms.Add(rent.transform);
+            }
+        }
+
+        private void OnDestroy()
+        {
+            transforms.Dispose();
         }
 
         private void Update()
@@ -33,11 +52,11 @@ namespace Debugger
             transformJobHandle.Complete();
         }
 
-        [BurstCompile(FloatPrecision.Low,FloatMode.Fast)]
+        [BurstCompile(FloatPrecision.Low, FloatMode.Fast)]
         private readonly struct TransformJob : IJobParallelForTransform
         {
             private readonly NativeArray<TransformParameter> parameters;
-            
+
             void IJobParallelForTransform.Execute(int index, TransformAccess transform)
             {
                 transform.position = parameters[index].position;
