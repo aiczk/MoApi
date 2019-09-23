@@ -9,25 +9,24 @@ using UnityEngine;
 
 namespace MagicOnion.API
 {
-    public class Movement : ChannelBehaviour,IPlayerParameterReceiver
+    public class Movement : ChannelBehaviour,IMovementReceiver
     {
         public TransformParameter[] parameters { get; } = new TransformParameter[4];
-        
-        private IPlayerParameterHub playerParameterHub;
+        private IMovementHub playerParameterHub;
         
         public override void Connect(Channel channel)
         {
-            playerParameterHub = StreamingHubClient.Connect<IPlayerParameterHub, IPlayerParameterReceiver>(channel, this);
+            playerParameterHub = StreamingHubClient.Connect<IMovementHub, IMovementReceiver>(channel, this);
         }
 
-        void IPlayerParameterReceiver.Move(PositionParameter positionParams)
+        void IMovementReceiver.Move(PositionParameter positionParams)
         {
             var index = positionParams.index;
             ref readonly var cache = ref parameters[index];
             parameters[index] = new TransformParameter(in cache, positionParams.position);
         }
 
-        void IPlayerParameterReceiver.Rotate(RotationParameter rotationParams)
+        void IMovementReceiver.Rotate(RotationParameter rotationParams)
         {
             var index = rotationParams.index;
             ref readonly var cache = ref parameters[index];

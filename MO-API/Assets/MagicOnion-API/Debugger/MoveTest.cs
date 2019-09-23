@@ -1,11 +1,6 @@
-﻿using System;
-using Grpc.Core;
-using Info;
+﻿using Info;
 using MagicOnion.API;
-using MagicOnion.Client;
 using Pool;
-using ServerShared.Hub;
-using ServerShared.MessagePackObject;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Jobs;
@@ -17,22 +12,24 @@ namespace Debugger
     public class MoveTest : MonoBehaviour
     {
         [SerializeField] private IdentifierComponent prefab = default;
-        
+
         private TransformAccessArray transforms;
         private Movement movement;
         private PlayerPool playerPool;
-
+        
         private void Awake()
         {
             movement = GetComponent<Movement>();
             playerPool = new PlayerPool(prefab);
             transforms = new TransformAccessArray(4, 2);
-
+            
             for (var i = 0; i < 4; i++)
             {
                 var rent = playerPool.Rent();
+                var trs = rent.transform;
+                
                 rent.index = i;
-                transforms.Add(rent.transform);
+                transforms.Add(trs);
             }
         }
 
@@ -67,6 +64,13 @@ namespace Debugger
             {
                 this.parameters = parameters;
             }
+        }
+
+        public void SetPlayer(int index)
+        {
+            var trs = transforms[index];
+            trs.gameObject.AddComponent<PlayerController>();
+            transforms.RemoveAtSwapBack(index);
         }
     }
 }

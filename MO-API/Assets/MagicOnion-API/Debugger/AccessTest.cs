@@ -11,22 +11,24 @@ namespace Debugger
         
         private Matching matching;
         private Access access;
-        
+        private MoveTest moveTest;
+
         private string roomName;
-        private int index;
         
         private void Awake()
         {
             access = GetComponent<Access>();
             matching = GetComponent<Matching>();
+            moveTest = GetComponent<MoveTest>();
 
             join
                 .OnClickAsObservable()
                 .Subscribe(async _ =>
                 {
                     roomName = await matching.Require();
-                    index = await matching.Join(roomName);
+                    var index = await matching.Join(roomName);
                     await access.Join(roomName, PlayerInfo.Instance.PlayerIdentifier);
+                    moveTest.SetPlayer(index);
                 });
 
             leave

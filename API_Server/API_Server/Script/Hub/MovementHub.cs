@@ -6,7 +6,7 @@ using ServerShared.MessagePackObject;
 
 namespace API_Server.Script.Hub
 {
-    public class PlayerParameterHub : StreamingHubBase<IPlayerParameterHub,IPlayerParameterReceiver>,IPlayerParameterHub
+    public class MovementHub : StreamingHubBase<IMovementHub,IMovementReceiver>,IMovementHub
     {
         private IGroup room;
         

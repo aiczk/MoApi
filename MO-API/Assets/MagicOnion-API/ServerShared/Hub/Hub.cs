@@ -17,13 +17,13 @@ namespace ServerShared.Hub
     }
     
 
-    public interface IPlayerParameterHub : IStreamingHub<IPlayerParameterHub, IPlayerParameterReceiver>
+    public interface IMovementHub : IStreamingHub<IMovementHub, IMovementReceiver>
     {
         Task MoveAsync(PositionParameter positionParams);
         Task RotateAsync(RotationParameter rotationParams);
     }
 
-    public interface IPlayerParameterReceiver
+    public interface IMovementReceiver
     {
         void Move(PositionParameter positionParams);
         void Rotate(RotationParameter rotationParams);
