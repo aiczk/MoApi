@@ -1,7 +1,6 @@
-﻿// ReSharper disable CheckNamespace
-
-using MessagePack;
+﻿using MessagePack;
 using UnityEngine;
+// ReSharper disable CheckNamespace
 
 namespace ServerShared.MessagePackObject
 {
@@ -19,7 +18,7 @@ namespace ServerShared.MessagePackObject
     public class PositionParameter
     {
         [Key(0)] 
-        public string id { get; set; }
+        public int index { get; set; }
         
         [Key(1)]
         public Vector3 position { get; set; }
@@ -29,7 +28,7 @@ namespace ServerShared.MessagePackObject
     public class RotationParameter
     {
         [Key(0)]
-        public string id { get; set; }
+        public int index { get; set; }
         
         [Key(1)]
         public Quaternion rotation { get; set; }

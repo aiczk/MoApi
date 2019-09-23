@@ -7,8 +7,8 @@ using ServerShared.Unary;
 
 namespace API_Server.Script.Unary
 {
-    public class RoomService : ServiceBase<IRoomService>,IRoomService
+    public class AccessControlService : ServiceBase<IAccessControlService>,IAccessControlService
     {
-        public UnaryResult<PlayerIdentifier[]> GetCurrentRoomMate() => UnaryResult(AccessControlHub.Players.ToArray());
+        public UnaryResult<PlayerIdentifier[]> GetCurrentTeamMate() => UnaryResult(AccessControlHub.Players.ToArray());
     }
 }

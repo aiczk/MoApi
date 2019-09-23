@@ -7,9 +7,9 @@ using ServerShared.MessagePackObject;
 
 namespace ServerShared.Unary
 {
-    public interface IRoomService : IService<IRoomService>
+    public interface IAccessControlService : IService<IAccessControlService>
     {
-        UnaryResult<PlayerIdentifier[]> GetCurrentRoomMate();
+        UnaryResult<PlayerIdentifier[]> GetCurrentTeamMate();
     }
 
     public interface IMatchMakeService : IService<IMatchMakeService>

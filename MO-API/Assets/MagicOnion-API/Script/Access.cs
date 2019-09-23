@@ -4,6 +4,7 @@ using MagicOnion.API;
 using MagicOnion.Client;
 using ServerShared.Hub;
 using ServerShared.MessagePackObject;
+using ServerShared.Unary;
 using UniRx;
 using UniRx.Async;
 // ReSharper disable CheckNamespace
@@ -14,19 +15,18 @@ namespace MagicOnion.API
     {
         private Subject<PlayerIdentifier> join = new Subject<PlayerIdentifier>();
         private Subject<PlayerIdentifier> leave = new Subject<PlayerIdentifier>();
-        
+
+        private IAccessControlService accessControlService;
         private IAccessControlHub accessControlHub;
         private bool isJoin;
         
         public override void Connect(Channel channel)
         {
             accessControlHub = StreamingHubClient.Connect<IAccessControlHub, IAccessControlReceiver>(channel, this);
+            accessControlService = MagicOnionClient.Create<IAccessControlService>(channel);
         }
-
-        public override async UniTask DisConnect()
-        {
-            await accessControlHub.DisposeAsync();
-        }
+        
+        public override async UniTask DisConnect() => await accessControlHub.DisposeAsync();
 
         void IAccessControlReceiver.Join(PlayerIdentifier playerIdentifier) => join.OnNext(playerIdentifier);
         void IAccessControlReceiver.Leave(PlayerIdentifier playerIdentifier) => leave.OnNext(playerIdentifier);
@@ -51,5 +51,7 @@ namespace MagicOnion.API
         
         public IObservable<PlayerIdentifier> JoinAsObservable => join.Share();
         public IObservable<PlayerIdentifier> LeaveAsObservable => leave.Share();
+
+        public async UniTask<PlayerIdentifier[]> TeamMate() => await accessControlService.GetCurrentTeamMate();
     }
 }
