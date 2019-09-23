@@ -11,8 +11,9 @@ namespace Debugger
         
         private Matching matching;
         private Access access;
-
+        
         private string roomName;
+        private int index;
         
         private void Awake()
         {
@@ -24,7 +25,7 @@ namespace Debugger
                 .Subscribe(async _ =>
                 {
                     roomName = await matching.Require();
-                    await matching.Join(roomName);
+                    index = await matching.Join(roomName);
                     await access.Join(roomName, PlayerInfo.Instance.PlayerIdentifier);
                 });
 

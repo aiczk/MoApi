@@ -19,12 +19,12 @@ namespace API_Server.Script.Unary
         private static Dictionary<string, int> matches = new Dictionary<string, int>();
         private static MatchData updateMatchCache = new MatchData();
         
-        public UnaryResult<Nil> JoinMatch(string matchName)
+        public UnaryResult<int> JoinMatch(string matchName)
         {
             updateMatchCache.roomName = matchName;
-            updateMatchCache.count = ++matches[matchName];
+            var index = updateMatchCache.count = ++matches[matchName];
 
-            return UnaryResult(Nil.Default);
+            return UnaryResult(index);
         }
 
         public UnaryResult<Nil> LeaveMatch(string matchName)

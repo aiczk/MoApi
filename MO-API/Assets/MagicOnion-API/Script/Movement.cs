@@ -33,7 +33,7 @@ namespace MagicOnion.API
             ref readonly var cache = ref parameters[index];
             parameters[index] = new TransformParameter(in cache, rotationParams.rotation);
         }
-
+        
         public async UniTask Move(PositionParameter positionParameter)
         {
             await playerParameterHub.MoveAsync(positionParameter);
@@ -44,7 +44,7 @@ namespace MagicOnion.API
             await playerParameterHub.RotateAsync(rotationParameter);
         }
     }
-
+    
     public readonly struct TransformParameter
     {
         public readonly Vector3 position;

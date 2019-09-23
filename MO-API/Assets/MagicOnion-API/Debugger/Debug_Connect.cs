@@ -27,7 +27,7 @@ namespace Debugger
                 {
                     Debug.Log("DisConnect");
                     await ConnectorInfo.DisConnect();
-                    await ChannelInfo.DisConnect();
+                    ChannelInfo.DisConnect();
                 });
 
             reset

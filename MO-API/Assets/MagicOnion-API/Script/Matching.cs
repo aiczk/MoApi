@@ -22,13 +22,13 @@ namespace MagicOnion.API
             return await matchMakeService.RequireMatch();
         }
 
-        public async UniTask Join(string matchName)
+        public async UniTask<int> Join(string matchName)
         {
             if(isJoin)
-                return;
+                return 0;
             
-            await matchMakeService.JoinMatch(matchName);
             isJoin = true;
+            return await matchMakeService.JoinMatch(matchName);
         }
 
         public async UniTask Leave(string matchName)

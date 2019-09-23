@@ -30,7 +30,7 @@ namespace MagicOnion.API
             return channel;
         }
 
-        public static async UniTask DisConnect()
+        public static void DisConnect()
         {
             if(!IsConnecting)
                 return;
