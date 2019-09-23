@@ -22,7 +22,7 @@ namespace API_Server.Script.Unary
         public UnaryResult<int> JoinMatch(string matchName)
         {
             updateMatchCache.roomName = matchName;
-            var index = updateMatchCache.count = ++matches[matchName];
+            var index = updateMatchCache.count = matches[matchName]++;
 
             return UnaryResult(index);
         }
@@ -50,7 +50,7 @@ namespace API_Server.Script.Unary
             {
                 var (roomName, count) = match;
                 
-                if(count >= 4)
+                if(count >= 3)
                     continue;
                 
                 matchName = roomName;
@@ -72,7 +72,7 @@ namespace API_Server.Script.Unary
             {
                 var (roomName, count) = match;
                 
-                if (count != 0 && count != 4)
+                if (count != 0 && count != 3)
                     continue;
                 
                 matches.Remove(roomName);

@@ -20,6 +20,7 @@ namespace Debugger
         private void Awake()
         {
             movement = GetComponent<Movement>();
+            
             playerPool = new PlayerPool(prefab);
             transforms = new TransformAccessArray(4, 2);
             
@@ -66,6 +67,7 @@ namespace Debugger
             }
         }
 
+        //うんち
         public void SetPlayer(int index)
         {
             var trs = transforms[index];

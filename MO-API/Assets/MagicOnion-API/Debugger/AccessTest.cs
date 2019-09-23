@@ -1,4 +1,5 @@
-﻿using MagicOnion.API;
+﻿using Info;
+using MagicOnion.API;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,11 +8,11 @@ namespace Debugger
 {
     public class AccessTest : MonoBehaviour
     {
+        [SerializeField] private IdentifierComponent prefab;
         [SerializeField] private Button join = default, leave = default;
         
         private Matching matching;
         private Access access;
-        private MoveTest moveTest;
 
         private string roomName;
         
@@ -19,7 +20,6 @@ namespace Debugger
         {
             access = GetComponent<Access>();
             matching = GetComponent<Matching>();
-            moveTest = GetComponent<MoveTest>();
 
             join
                 .OnClickAsObservable()
@@ -28,7 +28,6 @@ namespace Debugger
                     roomName = await matching.Require();
                     var index = await matching.Join(roomName);
                     await access.Join(roomName, PlayerInfo.Instance.PlayerIdentifier);
-                    moveTest.SetPlayer(index);
                 });
 
             leave

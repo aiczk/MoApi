@@ -1,21 +1,27 @@
 ﻿using System;
 using Grpc.Core;
+using Info;
 using MagicOnion.API;
 using MagicOnion.Client;
+using Pool;
 using ServerShared.Hub;
 using ServerShared.MessagePackObject;
 using ServerShared.Unary;
 using UniRx;
 using UniRx.Async;
+using UnityEngine;
+
 // ReSharper disable CheckNamespace
 
 namespace MagicOnion.API
 {
     public class Access : ChannelBehaviour, IAccessControlReceiver
     {
+        public IObservable<PlayerIdentifier> JoinAsObservable => join.Share();
+        public IObservable<PlayerIdentifier> LeaveAsObservable => leave.Share();
+        
         private Subject<PlayerIdentifier> join = new Subject<PlayerIdentifier>();
         private Subject<PlayerIdentifier> leave = new Subject<PlayerIdentifier>();
-
         private IAccessControlService accessControlService;
         private IAccessControlHub accessControlHub;
         private bool isJoin;
@@ -49,9 +55,6 @@ namespace MagicOnion.API
             isJoin = false;
         }
         
-        public IObservable<PlayerIdentifier> JoinAsObservable => join.Share();
-        public IObservable<PlayerIdentifier> LeaveAsObservable => leave.Share();
-
         public async UniTask<PlayerIdentifier[]> TeamMate() => await accessControlService.GetCurrentTeamMate();
     }
 }
