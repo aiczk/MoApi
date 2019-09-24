@@ -1,4 +1,5 @@
 ﻿using _Script.Application.Utility.Base;
+using Info;
 using ServerShared.MessagePackObject;
 using UnityEngine;
 
@@ -8,7 +9,7 @@ namespace MagicOnion.API
     {
         public PlayerIdentifier PlayerIdentifier => new PlayerIdentifier
         {
-            id = "Test",
+            id = Utility.GUID,
             name = "PLAYER"
         };
     }

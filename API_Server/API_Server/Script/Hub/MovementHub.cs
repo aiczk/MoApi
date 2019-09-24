@@ -4,7 +4,7 @@ using MagicOnion.Server.Hubs;
 using ServerShared.Hub;
 using ServerShared.MessagePackObject;
 
-namespace API_Server.Script.Hub
+namespace _Server.Script.Hub
 {
     public class MovementHub : StreamingHubBase<IMovementHub,IMovementReceiver>,IMovementHub
     {

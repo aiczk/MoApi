@@ -4,7 +4,7 @@ using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading.Tasks;
-using API_Server.Script.Utility;
+using _Server.Script.Utility;
 using MagicOnion;
 using MagicOnion.Server;
 using MessagePack;
@@ -12,7 +12,7 @@ using Reactive.Bindings;
 using ServerShared.MessagePackObject;
 using ServerShared.Unary;
 
-namespace API_Server.Script.Unary
+namespace _Server.Script.Unary
 {
     public class MatchMakeService : ServiceBase<IMatchMakeService>, IMatchMakeService
     {

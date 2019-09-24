@@ -17,10 +17,7 @@ namespace MagicOnion.API
             matchMakeService = MagicOnionClient.Create<IMatchMakeService>(channel);
         }
 
-        public async UniTask<string> Require()
-        {
-            return await matchMakeService.RequireMatch();
-        }
+        public async UniTask<string> Require() => await matchMakeService.RequireMatch();
 
         public async UniTask<int> Join(string matchName)
         {

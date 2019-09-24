@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Reactive.Subjects;
 using System.Threading.Tasks;
-using API_Server.Script.Utility;
+using _Server.Script.Utility;
 using MagicOnion.Server;
 using MagicOnion.Server.Hubs;
 using ServerShared.Hub;
 using ServerShared.MessagePackObject;
 
-namespace API_Server.Script.Hub
+namespace _Server.Script.Hub
 {
     public class AccessControlHub : StreamingHubBase<IAccessControlHub, IAccessControlReceiver>, IAccessControlHub
     {

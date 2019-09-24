@@ -12,11 +12,11 @@ namespace MagicOnion.API
     public class Movement : ChannelBehaviour,IMovementReceiver
     {
         public TransformParameter[] parameters { get; } = new TransformParameter[4];
-        private IMovementHub playerParameterHub;
+        private IMovementHub movementHub;
         
         public override void Connect(Channel channel)
         {
-            playerParameterHub = StreamingHubClient.Connect<IMovementHub, IMovementReceiver>(channel, this);
+            movementHub = StreamingHubClient.Connect<IMovementHub, IMovementReceiver>(channel, this);
         }
 
         void IMovementReceiver.Move(PositionParameter positionParams)
@@ -33,15 +33,8 @@ namespace MagicOnion.API
             parameters[index] = new TransformParameter(in cache, rotationParams.rotation);
         }
         
-        public async UniTask Move(PositionParameter positionParameter)
-        {
-            await playerParameterHub.MoveAsync(positionParameter);
-        }
-
-        public async UniTask Rotation(RotationParameter rotationParameter)
-        {
-            await playerParameterHub.RotateAsync(rotationParameter);
-        }
+        public async UniTask Move(PositionParameter positionParameter) => await movementHub.MoveAsync(positionParameter);
+        public async UniTask Rotation(RotationParameter rotationParameter) => await movementHub.RotateAsync(rotationParameter);
     }
     
     public readonly struct TransformParameter

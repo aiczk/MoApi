@@ -1,6 +1,7 @@
 ﻿using Info;
 using MagicOnion.API;
 using Pool;
+using UniRx;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Jobs;
@@ -15,11 +16,13 @@ namespace Debugger
 
         private TransformAccessArray transforms;
         private Movement movement;
+        private Access access;
         private PlayerPool playerPool;
         
         private void Awake()
         {
             movement = GetComponent<Movement>();
+            access = GetComponent<Access>();
             
             playerPool = new PlayerPool(prefab);
             transforms = new TransformAccessArray(4, 2);
@@ -32,6 +35,16 @@ namespace Debugger
                 rent.index = i;
                 transforms.Add(trs);
             }
+            
+            access
+                .PlayerJoinAsObservable
+                .Subscribe(index =>
+                {
+                    var trs = transforms[index];
+                    trs.gameObject.AddComponent<PlayerController>();
+                    
+                    transforms.RemoveAtSwapBack(index);
+                });
         }
 
         private void OnDestroy()
@@ -48,6 +61,7 @@ namespace Debugger
             
             JobHandle.ScheduleBatchedJobs();
             transformJobHandle.Complete();
+            transformParameters.Dispose();
         }
 
         [BurstCompile(FloatPrecision.Low, FloatMode.Fast)]
@@ -61,18 +75,7 @@ namespace Debugger
                 transform.rotation = parameters[index].rotation;
             }
 
-            public TransformJob(NativeArray<TransformParameter> parameters)
-            {
-                this.parameters = parameters;
-            }
-        }
-
-        //うんち
-        public void SetPlayer(int index)
-        {
-            var trs = transforms[index];
-            trs.gameObject.AddComponent<PlayerController>();
-            transforms.RemoveAtSwapBack(index);
+            public TransformJob(NativeArray<TransformParameter> parameters) => this.parameters = parameters;
         }
     }
 }

@@ -1,11 +1,11 @@
 ﻿using System;
-using API_Server.Script.Utility;
+using _Server.Script.Utility;
 using Grpc.Core;
 using Grpc.Core.Logging;
 using MagicOnion.Server;
 using MessagePack.Resolvers;
 
-namespace API_Server
+namespace _Server
 {
     internal static class Program
     {

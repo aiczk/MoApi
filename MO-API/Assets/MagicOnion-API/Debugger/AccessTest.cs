@@ -8,7 +8,6 @@ namespace Debugger
 {
     public class AccessTest : MonoBehaviour
     {
-        [SerializeField] private IdentifierComponent prefab;
         [SerializeField] private Button join = default, leave = default;
         
         private Matching matching;
@@ -27,7 +26,7 @@ namespace Debugger
                 {
                     roomName = await matching.Require();
                     var index = await matching.Join(roomName);
-                    await access.Join(roomName, PlayerInfo.Instance.PlayerIdentifier);
+                    await access.Join(index, roomName, PlayerInfo.Instance.PlayerIdentifier);
                 });
 
             leave
