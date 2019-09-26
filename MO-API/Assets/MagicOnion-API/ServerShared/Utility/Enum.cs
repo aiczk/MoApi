@@ -6,4 +6,10 @@ namespace ServerShared.Utility
     {
         Crystal,
     }
+
+    //animation用
+    public enum WeaponType
+    {
+        HandGun,
+    }
 }

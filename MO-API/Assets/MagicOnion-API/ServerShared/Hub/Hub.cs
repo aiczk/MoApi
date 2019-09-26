@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using MagicOnion;
 using ServerShared.MessagePackObject;
+using ServerShared.Utility;
 
 namespace ServerShared.Hub
 {
@@ -32,11 +33,19 @@ namespace ServerShared.Hub
     {
         Task DropAsync(DroppedItem droppedItem);
         Task GetAsync(DroppedItem droppedItem);
+        
+        Task ChangeWeaponAsync(EquipmentParameter equipmentParameter);
+        Task RegisterWeaponAsync(WeaponParameter weaponParameter);
+        Task ShotAsync(ShotParameter shotParameter);
     }
     
     public interface IPlayerBehaviourReceiver
     {
         void Drop(DroppedItem droppedItem);
         void Get(DroppedItem droppedItem);
+        
+        void ChangeWeapon(EquipmentParameter equipmentParameter);
+        void RegisterWeapon(WeaponParameter weaponParameter);
+        void Shot(ShotParameter shotParameter);
     }
 }
