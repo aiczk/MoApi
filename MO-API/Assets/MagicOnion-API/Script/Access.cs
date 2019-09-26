@@ -19,11 +19,9 @@ namespace MagicOnion.API
     {
         public IObservable<PlayerIdentifier> JoinAsObservable => join.Share();
         public IObservable<PlayerIdentifier> LeaveAsObservable => leave.Share();
-        public IObservable<int> PlayerJoinAsObservable => pio.Share();
         
         private Subject<PlayerIdentifier> join = new Subject<PlayerIdentifier>();
         private Subject<PlayerIdentifier> leave = new Subject<PlayerIdentifier>();
-        private Subject<int> pio = new Subject<int>();
         private IAccessControlService accessControlService;
         private IAccessControlHub accessControlHub;
         private bool isJoin;
@@ -39,13 +37,12 @@ namespace MagicOnion.API
         void IAccessControlReceiver.Join(PlayerIdentifier playerIdentifier) => join.OnNext(playerIdentifier);
         void IAccessControlReceiver.Leave(PlayerIdentifier playerIdentifier) => leave.OnNext(playerIdentifier);
 
-        public async UniTask Join(int index, string roomName, PlayerIdentifier playerIdentifier)
+        public async UniTask Join(string roomName, PlayerIdentifier playerIdentifier)
         {
             if (isJoin)
                 return;
 
             await accessControlHub.JoinAsync(roomName, playerIdentifier);
-            pio.OnNext(index);
             isJoin = true;
         }
 

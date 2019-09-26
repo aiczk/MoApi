@@ -1,4 +1,5 @@
 ﻿using MessagePack;
+using ServerShared.Utility;
 using UnityEngine;
 // ReSharper disable CheckNamespace
 
@@ -54,5 +55,21 @@ namespace ServerShared.MessagePackObject
             roomName = default;
             count = default;
         }
+    }
+
+    [MessagePackObject]
+    public class DroppedItem
+    {
+        [Key(0)]
+        public int dropOrGetPlayerIndex { get; set; }
+        
+        [Key(1)]
+        public DroppedItemType droppedItemType { get; set; }
+        
+        [Key(2)]
+        public Vector3 position { get; set; }
+        
+        [Key(3)]
+        public Quaternion rotation { get; set; }
     }
 }

@@ -16,6 +16,7 @@ namespace Debugger
         {
             movement = GameObject.FindGameObjectWithTag("System_Online").GetComponent<Movement>();
             var playerIndex = GetComponent<IdentifierComponent>().index;
+            GetComponent<Renderer>().material.color = Color.red;
 
             positionParam.index = playerIndex;
             rotationParam.index = playerIndex;

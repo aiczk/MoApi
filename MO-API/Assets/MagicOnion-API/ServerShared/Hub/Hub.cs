@@ -15,7 +15,6 @@ namespace ServerShared.Hub
         void Join(PlayerIdentifier playerIdentifier);
         void Leave(PlayerIdentifier playerIdentifier);
     }
-    
 
     public interface IMovementHub : IStreamingHub<IMovementHub, IMovementReceiver>
     {
@@ -27,5 +26,17 @@ namespace ServerShared.Hub
     {
         void Move(PositionParameter positionParams);
         void Rotate(RotationParameter rotationParams);
+    }
+
+    public interface IPlayerBehaviourHub : IStreamingHub<IPlayerBehaviourHub, IPlayerBehaviourReceiver>
+    {
+        Task DropAsync(DroppedItem droppedItem);
+        Task GetAsync(DroppedItem droppedItem);
+    }
+    
+    public interface IPlayerBehaviourReceiver
+    {
+        void Drop(DroppedItem droppedItem);
+        void Get(DroppedItem droppedItem);
     }
 }

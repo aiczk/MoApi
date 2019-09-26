@@ -16,13 +16,13 @@ namespace Debugger
 
         private TransformAccessArray transforms;
         private Movement movement;
-        private Access access;
+        private Matching matching;
         private PlayerPool playerPool;
         
         private void Awake()
         {
             movement = GetComponent<Movement>();
-            access = GetComponent<Access>();
+            matching = GetComponent<Matching>();
             
             playerPool = new PlayerPool(prefab);
             transforms = new TransformAccessArray(4, 2);
@@ -36,8 +36,8 @@ namespace Debugger
                 transforms.Add(trs);
             }
             
-            access
-                .PlayerJoinAsObservable
+            matching
+                .PlayerIndexAsObservable
                 .Subscribe(index =>
                 {
                     var trs = transforms[index];

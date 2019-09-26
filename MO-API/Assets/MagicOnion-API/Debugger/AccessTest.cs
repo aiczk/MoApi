@@ -25,8 +25,8 @@ namespace Debugger
                 .Subscribe(async _ =>
                 {
                     roomName = await matching.Require();
-                    var index = await matching.Join(roomName);
-                    await access.Join(index, roomName, PlayerInfo.Instance.PlayerIdentifier);
+                    await matching.Join(roomName);
+                    await access.Join(roomName, PlayerInfo.Instance.PlayerIdentifier);
                 });
 
             leave

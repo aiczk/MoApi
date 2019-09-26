@@ -11,7 +11,7 @@ namespace ServerShared.Unary
     {
         UnaryResult<PlayerIdentifier[]> GetCurrentTeamMate();
     }
-
+    
     public interface IMatchMakeService : IService<IMatchMakeService>
     {
         UnaryResult<string> RequireMatch();
