@@ -1,5 +1,6 @@
 ﻿using Info;
 using MagicOnion.API;
+using MagicOnion.API.Job;
 using Pool;
 using UniRx;
 using Unity.Burst;
@@ -54,7 +55,7 @@ namespace Debugger
 
         private void Update()
         {
-            var movementParameters = movement.parameters;
+            var movementParameters = movement.Parameters;
             var transformParameters = new NativeArray<TransformParameter>(movementParameters, Allocator.Temp);
             var transformJob = new TransformJob(transformParameters);
             var transformJobHandle = transformJob.Schedule(transforms);
@@ -71,8 +72,8 @@ namespace Debugger
 
             void IJobParallelForTransform.Execute(int index, TransformAccess transform)
             {
-                transform.position = parameters[index].position;
-                transform.rotation = parameters[index].rotation;
+                transform.position = parameters[index].Position;
+                transform.rotation = parameters[index].Rotation;
             }
 
             public TransformJob(NativeArray<TransformParameter> parameters) => this.parameters = parameters;

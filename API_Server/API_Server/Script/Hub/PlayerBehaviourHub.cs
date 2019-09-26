@@ -9,7 +9,6 @@ namespace _Server.Script.Hub
 {
     public class PlayerBehaviourHub : StreamingHubBase<IPlayerBehaviourHub, IPlayerBehaviourReceiver>,IPlayerBehaviourHub
     {
-        private bool isMain;
         private WeaponParameter weaponParamCache;
         private IGroup room;
         
@@ -40,7 +39,6 @@ namespace _Server.Script.Hub
         
         public Task ChangeWeaponAsync(EquipmentParameter equipmentParameter)
         {
-            //isMain = !isMain;
             BroadcastExceptSelf(room).ChangeWeapon(equipmentParameter);
             return Task.CompletedTask;
         }
