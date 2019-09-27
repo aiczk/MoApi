@@ -9,51 +9,51 @@ namespace ServerShared.MessagePackObject
     public class PlayerIdentifier
     {
         [Key(0)]
-        public string name { get; set; }
+        public string Name { get; set; }
         
         [Key(1)]
-        public string id { get; set; }
+        public string Id { get; set; }
     }
 
     [MessagePackObject]
-    public class PositionParameter
+    public struct PositionParameter
     {
         [Key(0)] 
-        public int index { get; set; }
+        public int Index { get; set; }
         
         [Key(1)]
-        public Vector3 position { get; set; }
+        public Vector3 Position { get; set; }
     }
 
     [MessagePackObject]
-    public class RotationParameter
+    public struct RotationParameter
     {
         [Key(0)]
-        public int index { get; set; }
+        public int Index { get; set; }
         
         [Key(1)]
-        public Quaternion rotation { get; set; }
+        public Quaternion Rotation { get; set; }
     }
 
     [MessagePackObject]
     public class MatchData
     {
         [Key(0)]
-        public string roomName { get; set; }
+        public string RoomName { get; set; }
         
         [Key(1)]
-        public int count { get; set; }
+        public int Count { get; set; }
         
         public MatchData(string roomName, int count)
         {
-            this.roomName = roomName;
-            this.count = count;
+            RoomName = roomName;
+            Count = count;
         }
 
         public MatchData()
         {
-            roomName = default;
-            count = default;
+            RoomName = default;
+            Count = default;
         }
     }
 
@@ -61,51 +61,45 @@ namespace ServerShared.MessagePackObject
     public class DroppedItem
     {
         [Key(0)]
-        public int dropOrGetPlayerIndex { get; set; }
+        public int DropOrGetPlayerIndex { get; set; }
         
         [Key(1)]
-        public DroppedItemType droppedItemType { get; set; }
+        public DroppedItemType DroppedItemType { get; set; }
         
         [Key(2)]
-        public Vector3 position { get; set; }
-        
-        [Key(3)]
-        public Quaternion rotation { get; set; }
+        public Vector3 Position { get; set; }
     }
 
     [MessagePackObject]
     public class WeaponParameter
     {
         [Key(0)] 
-        public int index { get; set; }
+        public int Index { get; set; }
         
         [Key(1)]
-        public WeaponType main { get; set; }
+        public WeaponType Main { get; set; }
         
         [Key(2)]
-        public WeaponType sub { get; set; }
+        public WeaponType Sub { get; set; }
     }
 
     [MessagePackObject]
     public class ShotParameter
     {
         [Key(0)]
-        public int index { get; set; }
-        
-        [Key(1)] 
-        public Vector3 position { get; set; }
+        public int Index { get; set; }
 
-        [Key(2)] 
-        public Vector3 velocity { get; set; }
+        [Key(1)] 
+        public Vector3 Direction { get; set; }
     }
     
     [MessagePackObject]
     public class EquipmentParameter
     {
         [Key(0)]
-        public int index { get; set; }
+        public int Index { get; set; }
 
         [Key(1)] 
-        public WeaponType weaponType { get; set; }
+        public WeaponType MainEquipment { get; set; }
     }
 }

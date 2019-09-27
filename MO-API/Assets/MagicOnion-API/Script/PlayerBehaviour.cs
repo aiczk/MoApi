@@ -4,19 +4,19 @@ using MagicOnion.Client;
 using MagicOnion.API.Job;
 using ServerShared.Hub;
 using ServerShared.MessagePackObject;
+using ServerShared.Utility;
 using UniRx;
 using UniRx.Async;
+using Unity.Collections;
 
 namespace MagicOnion.API
 {
-    //todo ECS向けに4要素だけの配列に変更を加える。
-    //movement参照。
     public class PlayerBehaviour : ChannelBehaviour, IPlayerBehaviourReceiver
     {
-        public PlayerBehaviourParameter[] Parameters { get; } = new PlayerBehaviourParameter[4];
+        public PlayerBehaviourData[] Parameters { get; } = new PlayerBehaviourData[4];
+        
         private Subject<DroppedItem> drop = new Subject<DroppedItem>()
                                     ,get = new Subject<DroppedItem>();
-        
         private Subject<WeaponParameter> register = new Subject<WeaponParameter>();
         private Subject<ShotParameter> shot = new Subject<ShotParameter>();
         private Subject<EquipmentParameter> change = new Subject<EquipmentParameter>();
@@ -27,7 +27,7 @@ namespace MagicOnion.API
         {
             playerBehaviourHub = StreamingHubClient.Connect<IPlayerBehaviourHub, IPlayerBehaviourReceiver>(channel, this);
         }
-        
+
         public IObservable<DroppedItem> DropAsObservable => drop.Share();
         public IObservable<DroppedItem> GetAsObservable => get.Share();
         public IObservable<WeaponParameter> RegisterWeaponAsObservable => register.Share();
@@ -37,39 +37,39 @@ namespace MagicOnion.API
         void IPlayerBehaviourReceiver.Drop(DroppedItem droppedItem) => drop.OnNext(droppedItem);
         void IPlayerBehaviourReceiver.Get(DroppedItem droppedItem) => get.OnNext(droppedItem);
         
-        void IPlayerBehaviourReceiver.ChangeWeapon(EquipmentParameter equipmentParameter)
+        void IPlayerBehaviourReceiver.ChangeWeapon(EquipmentParameter equipmentParam)
         {
-            var index = equipmentParameter.index;
-            var currentEquipment = equipmentParameter.weaponType;
-            ref readonly var cache = ref Parameters[index];
-            Parameters[index] = new PlayerBehaviourParameter(in cache, currentEquipment);
+            var index = equipmentParam.Index;
+            var currentEquipment = equipmentParam.MainEquipment;
+            ref var cache = ref Parameters[index];
+            cache = new PlayerBehaviourData(in cache, currentEquipment);
             
-            change.OnNext(equipmentParameter);
+            change.OnNext(equipmentParam);
         }
 
-        void IPlayerBehaviourReceiver.RegisterWeapon(WeaponParameter weaponParameter)
+        void IPlayerBehaviourReceiver.RegisterWeapon(WeaponParameter weaponParam)
         {
-            var index = weaponParameter.index;
-            var mainWeapon = weaponParameter.main;
-            var subWeapon = weaponParameter.sub;
-            ref readonly var cache = ref Parameters[index];
-            Parameters[index] = new PlayerBehaviourParameter(in cache, mainWeapon, subWeapon);
+            var index = weaponParam.Index;
+            var mainWeapon = weaponParam.Main;
+            var subWeapon = weaponParam.Sub;
+            ref var cache = ref Parameters[index];
+            cache = new PlayerBehaviourData(in cache, mainWeapon, subWeapon);
             
-            register.OnNext(weaponParameter);
+            register.OnNext(weaponParam);
         }
 
-        void IPlayerBehaviourReceiver.Shot(ShotParameter shotParameter) => shot.OnNext(shotParameter);
+        void IPlayerBehaviourReceiver.Shot(ShotParameter shotParam) => shot.OnNext(shotParam);
 
         public async UniTask Drop(DroppedItem droppedItem) => await playerBehaviourHub.DropAsync(droppedItem);
         public async UniTask Get(DroppedItem droppedItem) => await playerBehaviourHub.GetAsync(droppedItem);
 
-        public async UniTask Change(EquipmentParameter equipmentParameter) =>
-            await playerBehaviourHub.ChangeWeaponAsync(equipmentParameter);
+        public async UniTask ChangeWeapon(EquipmentParameter equipmentParam) =>
+            await playerBehaviourHub.ChangeWeaponAsync(equipmentParam);
 
-        public async UniTask Register(WeaponParameter weaponParameter) =>
-            await playerBehaviourHub.RegisterWeaponAsync(weaponParameter);
+        public async UniTask RegisterWeapon(WeaponParameter weaponParam) =>
+            await playerBehaviourHub.RegisterWeaponAsync(weaponParam);
 
-        public async UniTask Shot(ShotParameter shotParameter) => 
-            await playerBehaviourHub.ShotAsync(shotParameter);
+        public async UniTask Shot(ShotParameter shotParam) => 
+            await playerBehaviourHub.ShotAsync(shotParam);
     }
 }

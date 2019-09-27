@@ -1,18 +1,16 @@
-﻿using System.Collections.Generic;
-using Grpc.Core;
+﻿using Grpc.Core;
 using MagicOnion.Client;
 using MagicOnion.API.Job;
 using ServerShared.Hub;
 using ServerShared.MessagePackObject;
 using UniRx.Async;
-
 // ReSharper disable CheckNamespace
 
 namespace MagicOnion.API
 {
     public class Movement : ChannelBehaviour,IMovementReceiver
     {
-        public TransformParameter[] Parameters { get; } = new TransformParameter[4];
+        public TransformData[] Parameters { get; } = new TransformData[4];
         private IMovementHub movementHub;
         
         public override void Connect(Channel channel)
@@ -22,16 +20,16 @@ namespace MagicOnion.API
 
         void IMovementReceiver.Move(PositionParameter positionParams)
         {
-            var index = positionParams.index;
-            ref readonly var cache = ref Parameters[index];
-            Parameters[index] = new TransformParameter(in cache, positionParams.position);
+            var index = positionParams.Index;
+            ref var cache = ref Parameters[index];
+            cache = new TransformData(in cache, positionParams.Position);
         }
 
         void IMovementReceiver.Rotate(RotationParameter rotationParams)
         {
-            var index = rotationParams.index;
-            ref readonly var cache = ref Parameters[index];
-            Parameters[index] = new TransformParameter(in cache, rotationParams.rotation);
+            var index = rotationParams.Index;
+            ref var cache = ref Parameters[index];
+            cache = new TransformData(in cache, rotationParams.Rotation);
         }
         
         public async UniTask Move(PositionParameter positionParameter) => await movementHub.MoveAsync(positionParameter);

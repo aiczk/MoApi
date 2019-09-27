@@ -2,18 +2,18 @@
 
 namespace MagicOnion.API.Job
 {
-    public readonly struct TransformParameter
+    public readonly struct TransformData
     {
         public readonly Vector3 Position;
         public readonly Quaternion Rotation;
         
-        public TransformParameter(in TransformParameter copy, Vector3 position)
+        public TransformData(in TransformData copy, Vector3 position)
         {
             Position = position;
             Rotation = copy.Rotation;
         }
         
-        public TransformParameter(in TransformParameter copy, Quaternion rotation)
+        public TransformData(in TransformData copy, Quaternion rotation)
         {
             Position = copy.Position;
             Rotation = rotation;

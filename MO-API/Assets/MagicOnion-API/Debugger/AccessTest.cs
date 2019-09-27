@@ -41,7 +41,7 @@ namespace Debugger
                 .JoinAsObservable
                 .Subscribe(async player =>
                 {
-                    Debug.Log($"{player.name}が{roomName}に入室しました。");
+                    Debug.Log($"{player.Name}が{roomName}に入室しました。");
                     var currentCount = await matching.Count(roomName);
                     Debug.Log($"現在部屋にいる人数は{currentCount.ToString()}人です。");
                 });
@@ -50,7 +50,7 @@ namespace Debugger
                 .LeaveAsObservable
                 .Subscribe(async player =>
                 {
-                    Debug.Log($"{player.name}が{roomName}を退室しました。");
+                    Debug.Log($"{player.Name}が{roomName}を退室しました。");
                     var currentCount = await matching.Count(roomName);
                     Debug.Log($"現在部屋にいる人数は{currentCount.ToString()}人です。");
                 });

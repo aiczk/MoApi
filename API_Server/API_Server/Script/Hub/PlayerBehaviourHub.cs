@@ -9,7 +9,6 @@ namespace _Server.Script.Hub
 {
     public class PlayerBehaviourHub : StreamingHubBase<IPlayerBehaviourHub, IPlayerBehaviourReceiver>,IPlayerBehaviourHub
     {
-        private WeaponParameter weaponParamCache;
         private IGroup room;
         
         protected override ValueTask OnConnecting()
@@ -28,7 +27,7 @@ namespace _Server.Script.Hub
         public Task DropAsync(DroppedItem droppedItem)
         {
             BroadcastExceptSelf(room).Drop(droppedItem);
-            return Task.CompletedTask;;
+            return Task.CompletedTask;
         }
 
         public Task GetAsync(DroppedItem droppedItem)
@@ -45,7 +44,6 @@ namespace _Server.Script.Hub
 
         public Task RegisterWeaponAsync(WeaponParameter weaponParameter)
         {
-            weaponParamCache = weaponParameter;
             BroadcastExceptSelf(room).RegisterWeapon(weaponParameter);
             return Task.CompletedTask;
         }
@@ -53,7 +51,6 @@ namespace _Server.Script.Hub
         public Task ShotAsync(ShotParameter shotParameter)
         {
             BroadcastExceptSelf(room).Shot(shotParameter);
-            
             return Task.CompletedTask;;
         }
     }

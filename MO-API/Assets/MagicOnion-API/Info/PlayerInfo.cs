@@ -9,8 +9,8 @@ namespace MagicOnion.API
     {
         public PlayerIdentifier PlayerIdentifier => new PlayerIdentifier
         {
-            id = Utility.GUID,
-            name = "PLAYER"
+            Id = Utility.GUID,
+            Name = "PLAYER"
         };
     }
 }

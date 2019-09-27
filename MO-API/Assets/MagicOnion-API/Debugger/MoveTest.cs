@@ -38,7 +38,7 @@ namespace Debugger
             }
             
             matching
-                .PlayerIndexAsObservable
+                .ClientIndexAsObservable
                 .Subscribe(index =>
                 {
                     var trs = transforms[index];
@@ -56,7 +56,7 @@ namespace Debugger
         private void Update()
         {
             var movementParameters = movement.Parameters;
-            var transformParameters = new NativeArray<TransformParameter>(movementParameters, Allocator.Temp);
+            var transformParameters = new NativeArray<TransformData>(movementParameters, Allocator.Temp);
             var transformJob = new TransformJob(transformParameters);
             var transformJobHandle = transformJob.Schedule(transforms);
             
@@ -68,7 +68,8 @@ namespace Debugger
         [BurstCompile(FloatPrecision.Low, FloatMode.Fast)]
         private readonly struct TransformJob : IJobParallelForTransform
         {
-            private readonly NativeArray<TransformParameter> parameters;
+            [ReadOnly]
+            private readonly NativeArray<TransformData> parameters;
 
             void IJobParallelForTransform.Execute(int index, TransformAccess transform)
             {
@@ -76,7 +77,7 @@ namespace Debugger
                 transform.rotation = parameters[index].Rotation;
             }
 
-            public TransformJob(NativeArray<TransformParameter> parameters) => this.parameters = parameters;
+            public TransformJob(NativeArray<TransformData> parameters) => this.parameters = parameters;
         }
     }
 }

@@ -21,16 +21,16 @@ namespace _Server.Script.Unary
         
         public UnaryResult<int> JoinMatch(string matchName)
         {
-            updateMatchCache.roomName = matchName;
-            var index = updateMatchCache.count = matches[matchName]++;
+            updateMatchCache.RoomName = matchName;
+            var index = updateMatchCache.Count = matches[matchName]++;
 
             return UnaryResult(index);
         }
 
         public UnaryResult<Nil> LeaveMatch(string matchName)
         {
-            updateMatchCache.roomName = matchName;
-            updateMatchCache.count = --matches[matchName];
+            updateMatchCache.RoomName = matchName;
+            updateMatchCache.Count = --matches[matchName];
             
             return UnaryResult(Nil.Default);
         }

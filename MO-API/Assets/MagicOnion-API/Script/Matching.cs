@@ -11,7 +11,7 @@ namespace MagicOnion.API
 {
     public class Matching : ChannelBehaviour
     {
-        public IObservable<int> PlayerIndexAsObservable => playerIndex.Share();
+        public IObservable<int> ClientIndexAsObservable => playerIndex.Share();
         
         private Subject<int> playerIndex = new Subject<int>();
         private IMatchMakeService matchMakeService;

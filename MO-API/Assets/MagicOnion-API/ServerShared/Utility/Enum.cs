@@ -15,6 +15,5 @@ namespace ServerShared.Utility
         Pistol,
         Rifle,
         SMG,
-        HMG,
     }
 }
