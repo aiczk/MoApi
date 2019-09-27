@@ -1,6 +1,7 @@
 ﻿using System;
 using MagicOnion.API;
 using MagicOnion.API.Job;
+using ServerShared.MessagePackObject;
 using UniRx;
 using Unity.Burst;
 using Unity.Collections;
@@ -53,20 +54,6 @@ namespace Debugger
                 {
                     
                 });
-        }
-
-        [BurstCompile(FloatPrecision.Low, FloatMode.Fast)]
-        private readonly struct BehaviourJob : IJobParallelFor
-        {
-            [ReadOnly]
-            private readonly NativeArray<PlayerBehaviourData> parameters;
-            
-            void IJobParallelFor.Execute(int index)
-            {
-                
-            }
-
-            public BehaviourJob(NativeArray<PlayerBehaviourData> parameters) => this.parameters = parameters;
         }
     }
 }

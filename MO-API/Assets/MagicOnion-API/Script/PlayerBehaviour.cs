@@ -68,7 +68,7 @@ namespace MagicOnion.API
 
         public async UniTask RegisterWeapon(WeaponParameter weaponParam) =>
             await playerBehaviourHub.RegisterWeaponAsync(weaponParam);
-
+        
         public async UniTask Shot(ShotParameter shotParam) => 
             await playerBehaviourHub.ShotAsync(shotParam);
     }

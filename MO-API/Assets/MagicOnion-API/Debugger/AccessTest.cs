@@ -19,7 +19,7 @@ namespace Debugger
         {
             access = GetComponent<Access>();
             matching = GetComponent<Matching>();
-
+            
             join
                 .OnClickAsObservable()
                 .Subscribe(async _ =>
@@ -27,6 +27,7 @@ namespace Debugger
                     roomName = await matching.Require();
                     await matching.Join(roomName);
                     await access.Join(roomName, PlayerInfo.Instance.PlayerIdentifier);
+                    Debug.Log("Join");
                 });
 
             leave
@@ -35,6 +36,7 @@ namespace Debugger
                 {
                     await access.Leave();
                     await matching.Leave(roomName);
+                    Debug.Log("Leave");
                 });
 
             access

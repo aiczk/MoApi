@@ -58,20 +58,27 @@ namespace ServerShared.MessagePackObject
     }
 
     [MessagePackObject]
-    public class DroppedItem
+    public struct DroppedItem
     {
-        [Key(0)]
-        public int DropOrGetPlayerIndex { get; set; }
-        
-        [Key(1)]
-        public DroppedItemType DroppedItemType { get; set; }
-        
-        [Key(2)]
-        public Vector3 Position { get; set; }
+        [Key(0)] public int DropIndex { get; set; }
+
+        [Key(1)] public int GetIndex { get; set; }
+
+        [Key(2)] public DroppedItemType DroppedItemType { get; set; }
+
+        [Key(3)] public Vector3 Position { get; set; }
+
+        public DroppedItem(int dropIndex, int getIndex, DroppedItemType droppedItemType, Vector3 position)
+        {
+            DropIndex = dropIndex;
+            GetIndex = getIndex;
+            DroppedItemType = droppedItemType;
+            Position = position;
+        }
     }
 
     [MessagePackObject]
-    public class WeaponParameter
+    public struct WeaponParameter
     {
         [Key(0)] 
         public int Index { get; set; }
@@ -84,7 +91,7 @@ namespace ServerShared.MessagePackObject
     }
 
     [MessagePackObject]
-    public class ShotParameter
+    public struct ShotParameter
     {
         [Key(0)]
         public int Index { get; set; }
@@ -94,7 +101,7 @@ namespace ServerShared.MessagePackObject
     }
     
     [MessagePackObject]
-    public class EquipmentParameter
+    public struct EquipmentParameter
     {
         [Key(0)]
         public int Index { get; set; }

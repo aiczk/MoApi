@@ -11,8 +11,8 @@ namespace Debugger
         private Movement movement;
         private PlayerBehaviour behaviour;
         
-        private PositionParameter positionParam = new PositionParameter();
-        private RotationParameter rotationParam = new RotationParameter();
+        private PositionParameter positionParam;
+        private RotationParameter rotationParam;
 
         private void Awake()
         {

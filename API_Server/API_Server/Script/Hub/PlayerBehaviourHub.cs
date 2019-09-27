@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using MagicOnion.Server.Hubs;
 using ServerShared.Hub;
 using ServerShared.MessagePackObject;
-using ServerShared.Utility;
 
 namespace _Server.Script.Hub
 {
