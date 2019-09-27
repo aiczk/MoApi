@@ -24,35 +24,35 @@ namespace Debugger
                 .DropAsObservable
                 .Subscribe(x =>
                 {
-                    
+                    Debug.Log($"{x.RandomIndex.ToString()}が置かれました。");
                 });
 
             playerBehaviour
                 .GetAsObservable
                 .Subscribe(x =>
                 {
-                    
+                    Debug.Log($"{x.RandomIndex.ToString()}が取得されました。");
                 });
 
             playerBehaviour
                 .ShotAsObservable
                 .Subscribe(x =>
                 {
-                    
+                    Debug.Log($"{x.Index.ToString()}が射撃しました。");
                 });
 
             playerBehaviour
                 .ChangeEquipmentAsObservable
                 .Subscribe(x =>
                 {
-                    
+                    Debug.Log($"{x.Index.ToString()}が装備を変更しました。");
                 });
 
             playerBehaviour
                 .RegisterWeaponAsObservable
                 .Subscribe(x =>
                 {
-                    
+                    Debug.Log($"{x.Index.ToString()}が武器を変更しました。");
                 });
         }
     }

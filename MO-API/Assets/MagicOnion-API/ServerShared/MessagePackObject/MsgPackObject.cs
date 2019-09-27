@@ -1,4 +1,5 @@
-﻿using MessagePack;
+﻿using MagicOnion.Utils;
+using MessagePack;
 using ServerShared.Utility;
 using UnityEngine;
 // ReSharper disable CheckNamespace
@@ -8,42 +9,34 @@ namespace ServerShared.MessagePackObject
     [MessagePackObject]
     public class PlayerIdentifier
     {
-        [Key(0)]
-        public string Name { get; set; }
-        
-        [Key(1)]
-        public string Id { get; set; }
+        [Key(0)] public string Name { get; set; }
+
+        [Key(1)] public string Id { get; set; }
     }
 
     [MessagePackObject]
     public struct PositionParameter
     {
-        [Key(0)] 
-        public int Index { get; set; }
-        
-        [Key(1)]
-        public Vector3 Position { get; set; }
+        [Key(0)] public int Index { get; set; }
+
+        [Key(1)] public Vector3 Position { get; set; }
     }
 
     [MessagePackObject]
     public struct RotationParameter
     {
-        [Key(0)]
-        public int Index { get; set; }
-        
-        [Key(1)]
-        public Quaternion Rotation { get; set; }
+        [Key(0)] public int Index { get; set; }
+
+        [Key(1)] public Quaternion Rotation { get; set; }
     }
 
     [MessagePackObject]
     public class MatchData
     {
-        [Key(0)]
-        public string RoomName { get; set; }
-        
-        [Key(1)]
-        public int Count { get; set; }
-        
+        [Key(0)] public string RoomName { get; set; }
+
+        [Key(1)] public int Count { get; set; }
+
         public MatchData(string roomName, int count)
         {
             RoomName = roomName;
@@ -56,57 +49,54 @@ namespace ServerShared.MessagePackObject
             Count = default;
         }
     }
-
+    
     [MessagePackObject]
     public struct DroppedItem
     {
-        [Key(0)] public int DropIndex { get; set; }
+        [Key(0)] public int RandomIndex { get; set; }
+        
+        [Key(1)] public DroppedItemType DroppedItemType { get; set; }
+        
+        [Key(2)] public Vector3 Position { get; set; }
 
-        [Key(1)] public int GetIndex { get; set; }
-
-        [Key(2)] public DroppedItemType DroppedItemType { get; set; }
-
-        [Key(3)] public Vector3 Position { get; set; }
-
-        public DroppedItem(int dropIndex, int getIndex, DroppedItemType droppedItemType, Vector3 position)
+        public DroppedItem(DroppedItemType droppedItemType, Vector3 position)
         {
-            DropIndex = dropIndex;
-            GetIndex = getIndex;
             DroppedItemType = droppedItemType;
             Position = position;
+            RandomIndex = RandomProvider.GetRandomValue();
+        }
+        
+        public DroppedItem(DroppedItemType droppedItemType, Vector3 position,int randomIndex)
+        {
+            DroppedItemType = droppedItemType;
+            Position = position;
+            RandomIndex = randomIndex;
         }
     }
 
     [MessagePackObject]
     public struct WeaponParameter
     {
-        [Key(0)] 
-        public int Index { get; set; }
-        
-        [Key(1)]
-        public WeaponType Main { get; set; }
-        
-        [Key(2)]
-        public WeaponType Sub { get; set; }
+        [Key(0)] public int Index { get; set; }
+
+        [Key(1)] public WeaponType Main { get; set; }
+
+        [Key(2)] public WeaponType Sub { get; set; }
     }
 
     [MessagePackObject]
     public struct ShotParameter
     {
-        [Key(0)]
-        public int Index { get; set; }
+        [Key(0)] public int Index { get; set; }
 
-        [Key(1)] 
-        public Vector3 Direction { get; set; }
+        [Key(1)] public Vector3 Direction { get; set; }
     }
-    
+
     [MessagePackObject]
     public struct EquipmentParameter
     {
-        [Key(0)]
-        public int Index { get; set; }
+        [Key(0)] public int Index { get; set; }
 
-        [Key(1)] 
-        public WeaponType MainEquipment { get; set; }
+        [Key(1)] public WeaponType MainEquipment { get; set; }
     }
 }
