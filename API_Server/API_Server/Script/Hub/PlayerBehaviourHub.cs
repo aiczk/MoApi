@@ -25,31 +25,31 @@ namespace _Server.Script.Hub
         
         public Task DropAsync(DroppedItem droppedItem)
         {
-            BroadcastExceptSelf(room).Drop(droppedItem);
+            Broadcast(room).Drop(droppedItem);
             return Task.CompletedTask;
         }
 
         public Task GetAsync(DroppedItem droppedItem)
         {
-            BroadcastExceptSelf(room).Get(droppedItem);
+            Broadcast(room).Get(droppedItem);
             return Task.CompletedTask;
         }
         
         public Task ChangeWeaponAsync(EquipmentParameter equipmentParameter)
         {
-            BroadcastExceptSelf(room).ChangeWeapon(equipmentParameter);
+            Broadcast(room).ChangeWeapon(equipmentParameter);
             return Task.CompletedTask;
         }
 
         public Task RegisterWeaponAsync(WeaponParameter weaponParameter)
         {
-            BroadcastExceptSelf(room).RegisterWeapon(weaponParameter);
+            Broadcast(room).RegisterWeapon(weaponParameter);
             return Task.CompletedTask;
         }
 
         public Task ShotAsync(ShotParameter shotParameter)
         {
-            BroadcastExceptSelf(room).Shot(shotParameter);
+            Broadcast(room).Shot(shotParameter);
             return Task.CompletedTask;;
         }
     }

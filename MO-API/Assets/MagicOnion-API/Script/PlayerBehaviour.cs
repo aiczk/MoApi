@@ -50,10 +50,8 @@ namespace MagicOnion.API
         void IPlayerBehaviourReceiver.RegisterWeapon(WeaponParameter weaponParam)
         {
             var index = weaponParam.Index;
-            var mainWeapon = weaponParam.Main;
-            var subWeapon = weaponParam.Sub;
             ref var cache = ref Parameters[index];
-            cache = new PlayerBehaviourData(in cache, mainWeapon, subWeapon);
+            cache = new PlayerBehaviourData(in cache, weaponParam.Main, weaponParam.Sub);
             
             register.OnNext(weaponParam);
         }

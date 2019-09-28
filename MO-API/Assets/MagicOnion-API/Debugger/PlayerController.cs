@@ -1,5 +1,7 @@
-﻿using Info;
+﻿using System;
+using Info;
 using MagicOnion.API;
+using MagicOnion.Utils;
 using ServerShared.MessagePackObject;
 using ServerShared.Utility;
 using UniRx;
@@ -17,6 +19,7 @@ namespace Debugger
         private RotationParameter rotationParam;
         private WeaponParameter weaponParam;
         private EquipmentParameter equipmentParam;
+        private IDisposable disposable;
 
         private int playerIndex;
         
@@ -51,11 +54,11 @@ namespace Debugger
                     rotationParam.Rotation = rotation;
                     await movement.Rotation(rotationParam);
                 });
-
-            var update = this.UpdateAsObservable().Share();
-
-            update
-                .Subscribe(async _=>
+            
+            disposable =
+            Observable
+                .EveryUpdate()
+                .Subscribe(async _ =>
                 {
                     if (Input.GetKeyDown(KeyCode.Space))
                     {
@@ -69,16 +72,27 @@ namespace Debugger
                         var subCache = weaponParam.Sub;
                         weaponParam.Sub = weaponParam.Main;
                         equipmentParam.MainEquipment = weaponParam.Main = subCache;
-                        
+
                         await behaviour.ChangeWeapon(equipmentParam);
                     }
 
                     if (Input.GetKeyDown(KeyCode.D))
                     {
-                        var dropItem = new DroppedItem(DroppedItemType.Recovery, transform.position);
+                        var dropItem = new DroppedItem
+                        (
+                            RandomProvider.GetRandomValue(),
+                            DroppedItemType.Recovery,
+                            transform.position
+                        );
+                        
                         await behaviour.Drop(dropItem);
                     }
                 });
+        }
+
+        private void OnDestroy()
+        {
+            disposable.Dispose();
         }
     }
 }

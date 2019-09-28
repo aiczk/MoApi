@@ -3,6 +3,7 @@ using MagicOnion.API;
 using MagicOnion.API.Job;
 using Pool;
 using UniRx;
+using UniRx.Triggers;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Jobs;
@@ -19,6 +20,7 @@ namespace Debugger
         private Movement movement;
         private Matching matching;
         private PlayerPool playerPool;
+        private Transform player;
         
         private void Awake()
         {
@@ -38,13 +40,32 @@ namespace Debugger
             }
             
             matching
-                .ClientIndexAsObservable
+                .JoinClientAsObservable
                 .Subscribe(index =>
                 {
-                    var trs = transforms[index];
-                    trs.gameObject.AddComponent<PlayerController>();
+                    Debug.Log(index.ToString());
                     
-                    transforms.RemoveAtSwapBack(index);
+                    for (var i = 0; i < transforms.capacity; i++)
+                    {
+                        var trs = transforms[i];
+
+                        if (trs.GetComponent<IdentifierComponent>().index != index)
+                            continue;
+
+                        player = trs;
+                        trs.gameObject.AddComponent<PlayerController>();
+                        transforms.RemoveAtSwapBack(i);
+                        break;
+                    }
+                });
+
+            matching
+                .LeaveClientAsObservable
+                .Subscribe(x =>
+                {
+                    var go = player.gameObject;
+                    Destroy(go.GetComponent<PlayerController>());
+                    transforms.Add(player);
                 });
         }
 

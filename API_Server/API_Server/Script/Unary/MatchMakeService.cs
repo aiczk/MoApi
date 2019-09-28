@@ -17,21 +17,16 @@ namespace _Server.Script.Unary
     public class MatchMakeService : ServiceBase<IMatchMakeService>, IMatchMakeService
     {
         private static Dictionary<string, int> matches = new Dictionary<string, int>();
-        private static MatchData updateMatchCache = new MatchData();
         
         public UnaryResult<int> JoinMatch(string matchName)
         {
-            updateMatchCache.RoomName = matchName;
-            var index = updateMatchCache.Count = matches[matchName]++;
-
+            var index = matches[matchName] += 1;
             return UnaryResult(index);
         }
 
         public UnaryResult<Nil> LeaveMatch(string matchName)
-        {
-            updateMatchCache.RoomName = matchName;
-            updateMatchCache.Count = --matches[matchName];
-            
+        { 
+            matches[matchName] -= 1;
             return UnaryResult(Nil.Default);
         }
 
@@ -39,10 +34,9 @@ namespace _Server.Script.Unary
 
         public UnaryResult<string> RequireMatch()
         {
-            RemoveZeroOrMax();
             return UnaryResult(GetMatch());
         }
-        
+
         private static string GetMatch()
         {
             string matchName = null;
@@ -61,18 +55,21 @@ namespace _Server.Script.Unary
                 return matchName;
             
             matchName = Utils.GUID;
-            matches.Add(matchName, 0);
+            matches.Add(matchName, -1);
             
             return matchName;
         }
         
         private static void RemoveZeroOrMax()
         {
+            if(matches.Count == 0)
+                return;
+            
             foreach (var match in matches)
             {
                 var (roomName, count) = match;
                 
-                if (count != 0 && count != 3)
+                if (count != -1 && count != 3)
                     continue;
                 
                 matches.Remove(roomName);

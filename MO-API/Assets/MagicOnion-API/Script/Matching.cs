@@ -11,11 +11,13 @@ namespace MagicOnion.API
 {
     public class Matching : ChannelBehaviour
     {
-        public IObservable<int> ClientIndexAsObservable => playerIndex.Share();
+        public IObservable<int> JoinClientAsObservable => joinClient.Share();
+        public IObservable<int> LeaveClientAsObservable => leaveClient.Share();
         
-        private Subject<int> playerIndex = new Subject<int>();
+        private Subject<int> joinClient = new Subject<int>(),leaveClient = new Subject<int>();
         private IMatchMakeService matchMakeService;
         private bool isJoin;
+        private int playerIndexCache;
         
         public override void Connect(Channel channel)
         {
@@ -31,8 +33,8 @@ namespace MagicOnion.API
             
             isJoin = true;
             
-            var index = await matchMakeService.JoinMatch(matchName);
-            playerIndex.OnNext(index);
+            playerIndexCache = await matchMakeService.JoinMatch(matchName);
+            joinClient.OnNext(playerIndexCache);
         }
 
         public async UniTask Leave(string matchName)
@@ -42,6 +44,7 @@ namespace MagicOnion.API
             
             await matchMakeService.LeaveMatch(matchName);
             isJoin = false;
+            leaveClient.OnNext(playerIndexCache);
         }
 
         public async UniTask<int> Count(string matchName)

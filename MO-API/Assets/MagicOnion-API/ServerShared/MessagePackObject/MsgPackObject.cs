@@ -59,18 +59,11 @@ namespace ServerShared.MessagePackObject
         
         [Key(2)] public Vector3 Position { get; set; }
 
-        public DroppedItem(DroppedItemType droppedItemType, Vector3 position)
+        public DroppedItem(int randomIndex, DroppedItemType droppedItemType, Vector3 position)
         {
-            DroppedItemType = droppedItemType;
-            Position = position;
-            RandomIndex = RandomProvider.GetRandomValue();
-        }
-        
-        public DroppedItem(DroppedItemType droppedItemType, Vector3 position,int randomIndex)
-        {
-            DroppedItemType = droppedItemType;
-            Position = position;
             RandomIndex = randomIndex;
+            DroppedItemType = droppedItemType;
+            Position = position;
         }
     }
 
