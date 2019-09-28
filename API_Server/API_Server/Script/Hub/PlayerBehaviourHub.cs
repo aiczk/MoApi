@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 using MagicOnion.Server.Hubs;
 using ServerShared.Hub;
@@ -18,7 +19,7 @@ namespace _Server.Script.Hub
 
             AccessControlHub
                 .LeaveAsObservable
-                .Subscribe(async context => await room.RemoveAsync(context));
+                .Subscribe(async _ => await room.RemoveAsync(Context));
             
             return base.OnConnecting();
         }

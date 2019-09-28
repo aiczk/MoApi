@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reactive;
 using System.Reactive.Subjects;
 using System.Threading.Tasks;
 using _Server.Script.Utility;
@@ -13,11 +14,11 @@ namespace _Server.Script.Hub
     public class AccessControlHub : StreamingHubBase<IAccessControlHub, IAccessControlReceiver>, IAccessControlHub
     {
         public static IObservable<string> JoinAsObservable => join.Share();
-        public static IObservable<ServiceContext> LeaveAsObservable => leave.Share();
+        public static IObservable<Unit> LeaveAsObservable => leave.Share();
         public static ICollection<PlayerIdentifier> Players { get; private set; }
 
         private static Subject<string> join = new Subject<string>();
-        private static Subject<ServiceContext> leave = new Subject<ServiceContext>();
+        private static Subject<Unit> leave = new Subject<Unit>();
         
         private IGroup room;
         private IInMemoryStorage<PlayerIdentifier> storage;
@@ -38,7 +39,7 @@ namespace _Server.Script.Hub
         {
             await room.RemoveAsync(Context);
             
-            leave.OnNext(Context);
+            leave.OnNext(default);
             BroadcastExceptSelf(room).Leave(self);
 
             Players = null;

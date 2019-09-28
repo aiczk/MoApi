@@ -8,6 +8,7 @@ using ServerShared.Utility;
 using UniRx;
 using UniRx.Async;
 using Unity.Collections;
+using UnityEngine;
 
 namespace MagicOnion.API
 {
@@ -58,7 +59,12 @@ namespace MagicOnion.API
 
         void IPlayerBehaviourReceiver.Shot(ShotParameter shotParam) => shot.OnNext(shotParam);
 
-        public async UniTask Drop(DroppedItem droppedItem) => await playerBehaviourHub.DropAsync(droppedItem);
+        public async UniTask Drop(DroppedItem droppedItem)
+        {
+            Debug.Log("Called");
+            await playerBehaviourHub.DropAsync(droppedItem);
+        }
+
         public async UniTask Get(DroppedItem droppedItem) => await playerBehaviourHub.GetAsync(droppedItem);
 
         public async UniTask ChangeWeapon(EquipmentParameter equipmentParam) =>
