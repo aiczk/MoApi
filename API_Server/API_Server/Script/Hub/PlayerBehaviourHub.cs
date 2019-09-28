@@ -15,7 +15,11 @@ namespace _Server.Script.Hub
         {
             AccessControlHub
                 .JoinAsObservable
-                .Subscribe(async groupName => room = await Group.AddAsync(groupName));
+                .Subscribe(async groupName =>
+                {
+                    room = await Group.AddAsync(groupName);
+                    Logger.Debug(groupName);
+                });
 
             AccessControlHub
                 .LeaveAsObservable
@@ -26,31 +30,31 @@ namespace _Server.Script.Hub
         
         public Task DropAsync(DroppedItem droppedItem)
         {
-            Broadcast(room).Drop(droppedItem);
+            BroadcastExceptSelf(room).Drop(droppedItem);
             return Task.CompletedTask;
         }
 
         public Task GetAsync(DroppedItem droppedItem)
         {
-            Broadcast(room).Get(droppedItem);
+            BroadcastExceptSelf(room).Get(droppedItem);
             return Task.CompletedTask;
         }
         
         public Task ChangeWeaponAsync(EquipmentParameter equipmentParameter)
         {
-            Broadcast(room).ChangeWeapon(equipmentParameter);
+            BroadcastExceptSelf(room).ChangeWeapon(equipmentParameter);
             return Task.CompletedTask;
         }
 
         public Task RegisterWeaponAsync(WeaponParameter weaponParameter)
         {
-            Broadcast(room).RegisterWeapon(weaponParameter);
+            BroadcastExceptSelf(room).RegisterWeapon(weaponParameter);
             return Task.CompletedTask;
         }
 
         public Task ShotAsync(ShotParameter shotParameter)
         {
-            Broadcast(room).Shot(shotParameter);
+            BroadcastExceptSelf(room).Shot(shotParameter);
             return Task.CompletedTask;;
         }
     }

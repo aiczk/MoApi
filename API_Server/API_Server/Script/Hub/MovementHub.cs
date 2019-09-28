@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 using MagicOnion.Server.Hubs;
 using ServerShared.Hub;
@@ -9,13 +10,15 @@ namespace _Server.Script.Hub
     public class MovementHub : StreamingHubBase<IMovementHub,IMovementReceiver>,IMovementHub
     {
         private IGroup room;
-        
         protected override ValueTask OnConnecting()
         {
             AccessControlHub
                 .JoinAsObservable
-                .Subscribe(async groupName => room = await Group.AddAsync(groupName));
-
+                .Subscribe(async groupName =>
+                {
+                    room = await Group.AddAsync(groupName);
+                });
+            
             AccessControlHub
                 .LeaveAsObservable
                 .Subscribe(async _ => await room.RemoveAsync(Context));

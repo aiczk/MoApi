@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reactive;
+using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading.Tasks;
 using _Server.Script.Utility;
@@ -13,8 +14,8 @@ namespace _Server.Script.Hub
 {
     public class AccessControlHub : StreamingHubBase<IAccessControlHub, IAccessControlReceiver>, IAccessControlHub
     {
-        public static IObservable<string> JoinAsObservable => join.Share();
-        public static IObservable<Unit> LeaveAsObservable => leave.Share();
+        public static IObservable<string> JoinAsObservable => join.AsObservable().Take(1);
+        public static IObservable<Unit> LeaveAsObservable => leave.AsObservable().Take(1);
         public static ICollection<PlayerIdentifier> Players { get; private set; }
 
         private static Subject<string> join = new Subject<string>();
@@ -23,7 +24,7 @@ namespace _Server.Script.Hub
         private IGroup room;
         private IInMemoryStorage<PlayerIdentifier> storage;
         private PlayerIdentifier self;
-
+        
         public async Task JoinAsync(string roomName, PlayerIdentifier playerIdentifier)
         {
             (room, storage) = await Group.AddAsync(roomName, playerIdentifier);
@@ -32,6 +33,7 @@ namespace _Server.Script.Hub
             BroadcastExceptSelf(room).Join(playerIdentifier);
             Players = storage.AllValues;
             
+            //バグの原因
             join.OnNext(roomName);
         }
 
