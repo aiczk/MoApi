@@ -37,6 +37,7 @@ namespace ServerShared.Hub
         Task ChangeWeaponAsync(EquipmentParameter equipmentParameter);
         Task RegisterWeaponAsync(WeaponParameter weaponParameter);
         Task ShotAsync(ShotParameter shotParameter);
+        Task ReloadAsync(int index);
     }
     
     public interface IPlayerBehaviourReceiver
@@ -47,5 +48,6 @@ namespace ServerShared.Hub
         void ChangeWeapon(EquipmentParameter equipmentParameter);
         void RegisterWeapon(WeaponParameter weaponParameter);
         void Shot(ShotParameter shotParameter);
+        void Reload(int index);
     }
 }

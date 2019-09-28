@@ -14,10 +14,7 @@ namespace _Server.Script.Hub
         {
             AccessControlHub
                 .JoinAsObservable
-                .Subscribe(async groupName =>
-                {
-                    room = await Group.AddAsync(groupName);
-                });
+                .Subscribe(async groupName => room = await Group.AddAsync(groupName));
             
             AccessControlHub
                 .LeaveAsObservable

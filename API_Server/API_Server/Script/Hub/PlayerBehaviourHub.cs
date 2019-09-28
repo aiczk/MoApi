@@ -15,11 +15,7 @@ namespace _Server.Script.Hub
         {
             AccessControlHub
                 .JoinAsObservable
-                .Subscribe(async groupName =>
-                {
-                    room = await Group.AddAsync(groupName);
-                    Logger.Debug(groupName);
-                });
+                .Subscribe(async groupName => room = await Group.AddAsync(groupName));
 
             AccessControlHub
                 .LeaveAsObservable
@@ -56,6 +52,12 @@ namespace _Server.Script.Hub
         {
             BroadcastExceptSelf(room).Shot(shotParameter);
             return Task.CompletedTask;;
+        }
+
+        public Task ReloadAsync(int index)
+        {
+            BroadcastExceptSelf(room).Reload(index);
+            return Task.CompletedTask;
         }
     }
 }

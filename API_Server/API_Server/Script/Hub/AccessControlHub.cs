@@ -32,8 +32,6 @@ namespace _Server.Script.Hub
             self = playerIdentifier;
             BroadcastExceptSelf(room).Join(playerIdentifier);
             Players = storage.AllValues;
-            
-            //バグの原因
             join.OnNext(roomName);
         }
 
@@ -41,10 +39,9 @@ namespace _Server.Script.Hub
         {
             await room.RemoveAsync(Context);
             
-            leave.OnNext(default);
             BroadcastExceptSelf(room).Leave(self);
-
             Players = null;
+            leave.OnNext(default);
         }
     }
 }

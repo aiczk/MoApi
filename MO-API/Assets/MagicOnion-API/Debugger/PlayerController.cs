@@ -5,7 +5,6 @@ using MagicOnion.Utils;
 using ServerShared.MessagePackObject;
 using ServerShared.Utility;
 using UniRx;
-using UniRx.Triggers;
 using UnityEngine;
 
 namespace Debugger
@@ -80,12 +79,28 @@ namespace Debugger
                     {
                         var dropItem = new DroppedItem
                         (
-                            RandomProvider.GetRandomValue(),
+                            Utility.GetRandomValue(),
                             DroppedItemType.Recovery,
                             transform.position
                         );
                         
                         await behaviour.Drop(dropItem);
+                    }
+
+                    if (Input.GetMouseButtonDown(0))
+                    {
+                        var shot = new ShotParameter
+                        {
+                            Index = playerIndex,
+                            Direction = transform.forward
+                        };
+                        
+                        await behaviour.Shot(shot);
+                    }
+
+                    if (Input.GetMouseButtonDown(1))
+                    {
+                        await behaviour.Reload(playerIndex);
                     }
                 });
         }

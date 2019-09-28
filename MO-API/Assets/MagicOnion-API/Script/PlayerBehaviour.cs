@@ -21,6 +21,7 @@ namespace MagicOnion.API
         private Subject<WeaponParameter> register = new Subject<WeaponParameter>();
         private Subject<ShotParameter> shot = new Subject<ShotParameter>();
         private Subject<EquipmentParameter> change = new Subject<EquipmentParameter>();
+        private Subject<int> reload = new Subject<int>();
         
         private IPlayerBehaviourHub playerBehaviourHub;
         
@@ -34,6 +35,7 @@ namespace MagicOnion.API
         public IObservable<WeaponParameter> RegisterWeaponAsObservable => register.Share();
         public IObservable<ShotParameter> ShotAsObservable => shot.Share();
         public IObservable<EquipmentParameter> ChangeEquipmentAsObservable => change.Share();
+        public IObservable<int> ReloadAsObservable => reload.Share();
         
         void IPlayerBehaviourReceiver.Drop(DroppedItem droppedItem) => drop.OnNext(droppedItem);
         void IPlayerBehaviourReceiver.Get(DroppedItem droppedItem) => get.OnNext(droppedItem);
@@ -58,7 +60,8 @@ namespace MagicOnion.API
         }
 
         void IPlayerBehaviourReceiver.Shot(ShotParameter shotParam) => shot.OnNext(shotParam);
-
+        void IPlayerBehaviourReceiver.Reload(int index) => reload.OnNext(index);
+        
         public async UniTask Drop(DroppedItem droppedItem) => await playerBehaviourHub.DropAsync(droppedItem);
         public async UniTask Get(DroppedItem droppedItem) => await playerBehaviourHub.GetAsync(droppedItem);
 
@@ -70,5 +73,7 @@ namespace MagicOnion.API
         
         public async UniTask Shot(ShotParameter shotParam) => 
             await playerBehaviourHub.ShotAsync(shotParam);
+
+        public async UniTask Reload(int index) => await playerBehaviourHub.ReloadAsync(index);
     }
 }

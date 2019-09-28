@@ -7,6 +7,7 @@ namespace ServerShared.Utility
     {
         Crystal,
         Recovery,
+        Ammo,
     }
 
     //animation用
