@@ -12,7 +12,7 @@ namespace Debugger
     public class PlayerBehaviourTest : MonoBehaviour
     {
         private PlayerBehaviour playerBehaviour;
-        private NativeList<int> items = new NativeList<int>(Allocator.Persistent);
+        //private NativeList<int> items = new NativeList<int>(Allocator.Persistent);
         
         private void Awake()
         {
@@ -23,7 +23,7 @@ namespace Debugger
                 .Subscribe(x =>
                 {
                     Debug.Log($"アイテムID {x.RandomIndex.ToString()}が置かれました。");
-                    items.Add(x.RandomIndex);
+                    //items.Add(x.RandomIndex);
                 });
 
             playerBehaviour
@@ -31,7 +31,7 @@ namespace Debugger
                 .Subscribe(x =>
                 {
                     Debug.Log($"アイテムID {x.RandomIndex.ToString()}が取得されました。");
-                    items.RemoveAtSwapBack(x.RandomIndex);
+                    //items.RemoveAtSwapBack(x.RandomIndex);
                 });
 
             playerBehaviour
@@ -65,7 +65,7 @@ namespace Debugger
 
         private void OnDestroy()
         {
-            items.Dispose();
+            //items.Dispose();
         }
     }
 }
