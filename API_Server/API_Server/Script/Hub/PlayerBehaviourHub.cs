@@ -12,7 +12,7 @@ namespace _Server.Script.Hub
     {
         private static IGroup room;
         
-        protected override async ValueTask OnConnecting()
+        protected override ValueTask OnConnecting()
         {
             AccessControlHub
                 .JoinAsObservable
@@ -21,6 +21,8 @@ namespace _Server.Script.Hub
             AccessControlHub
                 .LeaveAsObservable
                 .Subscribe(async _ => await room.RemoveAsync(Context));
+
+            return CompletedTask;
         }
         
         public Task DropAsync(DroppedItem droppedItem)
