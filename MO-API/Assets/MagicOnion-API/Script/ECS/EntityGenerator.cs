@@ -35,7 +35,8 @@ namespace MagicOnion.API.ECS
                 
                 manager.SetComponentData(instance, new Translation {Value = (float3)Random.insideUnitSphere * 5f});
                 manager.SetComponentData(instance, new Rotation {Value = Random.rotation});
-                manager.SetComponentData(instance, new LifeTime{Value = 5f});
+                manager.SetComponentData(instance, new LifeTime {Value = 1f});
+                manager.SetComponentData(instance, new Bullet {Direction = Random.rotation.eulerAngles.normalized});
             }
         }
 
@@ -49,7 +50,8 @@ namespace MagicOnion.API.ECS
                 ComponentType.ReadWrite<Rotation>(),
                 ComponentType.ReadWrite<LocalToWorld>(),
                 ComponentType.ReadOnly<RenderMesh>(),
-                ComponentType.ReadWrite<LifeTime>()
+                ComponentType.ReadWrite<LifeTime>(),
+                ComponentType.ReadWrite<Bullet>()
             );
             
             sharedEntity = manager.CreateEntity(archetype);
