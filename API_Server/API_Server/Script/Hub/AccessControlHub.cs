@@ -28,7 +28,6 @@ namespace _Server.Script.Hub
         public async Task JoinAsync(string roomName, PlayerIdentifier playerIdentifier)
         {
             (room, storage) = await Group.AddAsync(roomName, playerIdentifier);
-
             self = playerIdentifier;
             BroadcastExceptSelf(room).Join(playerIdentifier);
             Players = storage.AllValues;

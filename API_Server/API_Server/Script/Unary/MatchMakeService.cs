@@ -30,7 +30,7 @@ namespace _Server.Script.Unary
             return UnaryResult(Nil.Default);
         }
 
-        public UnaryResult<int> MatchCount(string matchName) => UnaryResult(matches[matchName]);
+        public UnaryResult<int> MatchCount(string matchName) => UnaryResult(matches[matchName] + 1);
 
         public UnaryResult<string> RequireMatch()
         {
@@ -58,22 +58,6 @@ namespace _Server.Script.Unary
             matches.Add(matchName, -1);
             
             return matchName;
-        }
-        
-        private static void RemoveZeroOrMax()
-        {
-            if(matches.Count == 0)
-                return;
-            
-            foreach (var match in matches)
-            {
-                var (roomName, count) = match;
-                
-                if (count != -1 && count != 3)
-                    continue;
-                
-                matches.Remove(roomName);
-            }
         }
     }
 }

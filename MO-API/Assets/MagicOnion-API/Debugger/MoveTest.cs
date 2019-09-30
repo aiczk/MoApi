@@ -77,7 +77,7 @@ namespace Debugger
         private void Update()
         {
             var movementParameters = movement.Parameters;
-            var transformParameters = new NativeArray<TransformData>(movementParameters, Allocator.Temp);
+            var transformParameters = new NativeArray<TransformData>(movementParameters, Allocator.TempJob);
             var transformJob = new TransformJob(transformParameters);
             var transformJobHandle = transformJob.Schedule(transforms);
             

@@ -13,6 +13,7 @@ namespace Debugger
     {
         private Movement movement;
         private PlayerBehaviour behaviour;
+        private Renderer render;
         
         private PositionParameter positionParam;
         private RotationParameter rotationParam;
@@ -29,7 +30,8 @@ namespace Debugger
             behaviour = system.GetComponent<PlayerBehaviour>();
             
             playerIndex = GetComponent<IdentifierComponent>().index;
-            GetComponent<Renderer>().material.color = Color.red;
+            render = GetComponent<Renderer>();
+            render.material.color = Color.red;
 
             positionParam.Index = playerIndex;
             rotationParam.Index = playerIndex;
@@ -66,7 +68,7 @@ namespace Debugger
                         await behaviour.RegisterWeapon(weaponParam);
                     }
 
-                    if (Input.GetKeyDown(KeyCode.R))
+                    if (Input.GetKeyDown(KeyCode.C))
                     {
                         var subCache = weaponParam.Sub;
                         weaponParam.Sub = weaponParam.Main;
@@ -75,7 +77,7 @@ namespace Debugger
                         await behaviour.ChangeWeapon(equipmentParam);
                     }
 
-                    if (Input.GetKeyDown(KeyCode.D))
+                    if (Input.GetKeyDown(KeyCode.F))
                     {
                         var dropItem = new DroppedItem
                         (
@@ -107,6 +109,7 @@ namespace Debugger
 
         private void OnDestroy()
         {
+            render.material.color = Color.white;
             disposable.Dispose();
         }
     }

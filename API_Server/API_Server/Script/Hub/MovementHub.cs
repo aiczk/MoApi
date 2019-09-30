@@ -9,7 +9,7 @@ namespace _Server.Script.Hub
 {
     public class MovementHub : StreamingHubBase<IMovementHub,IMovementReceiver>,IMovementHub
     {
-        private IGroup room;
+        private static IGroup room;
         protected override ValueTask OnConnecting()
         {
             AccessControlHub
@@ -26,14 +26,12 @@ namespace _Server.Script.Hub
         public Task MoveAsync(PositionParameter positionParams)
         {
             BroadcastExceptSelf(room).Move(positionParams);
-            
             return Task.CompletedTask;
         }
 
         public Task RotateAsync(RotationParameter rotationParams)
         {
             BroadcastExceptSelf(room).Rotate(rotationParams);
-            
             return Task.CompletedTask;
         }
     }
