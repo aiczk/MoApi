@@ -1,4 +1,5 @@
-﻿using _Script.Application.Utility.Base;
+﻿using Script.ECS.Component;
+using UniRx.Async;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Rendering;
@@ -16,6 +17,13 @@ namespace MagicOnion.API.ECS
         private EntityManager manager;
         private EntityArchetype archetype;
         private Entity sharedEntity;
+        
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+        private static void InitEcs()
+        {
+            var playerLoop = ScriptBehaviourUpdateOrder.CurrentPlayerLoop;
+            PlayerLoopHelper.Initialize(ref playerLoop);
+        }
 
         private void Start()
         {
@@ -27,8 +35,8 @@ namespace MagicOnion.API.ECS
                 
                 manager.SetComponentData(instance, new Translation {Value = (float3)Random.insideUnitSphere * 5f});
                 manager.SetComponentData(instance, new Rotation {Value = Random.rotation});
+                manager.SetComponentData(instance, new LifeTime{Value = 5f});
             }
-
         }
 
         private void InitEntity()
@@ -40,8 +48,9 @@ namespace MagicOnion.API.ECS
                 ComponentType.ReadWrite<Translation>(),
                 ComponentType.ReadWrite<Rotation>(),
                 ComponentType.ReadWrite<LocalToWorld>(),
-                ComponentType.ReadWrite<RenderMesh>()
-            ); 
+                ComponentType.ReadOnly<RenderMesh>(),
+                ComponentType.ReadWrite<LifeTime>()
+            );
             
             sharedEntity = manager.CreateEntity(archetype);
             manager.SetSharedComponentData(sharedEntity, renderMesh);
