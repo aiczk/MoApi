@@ -1,5 +1,7 @@
 ﻿using Script.ECS.Component;
+using UniRx;
 using UniRx.Async;
+using UniRx.Triggers;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Rendering;
@@ -28,34 +30,41 @@ namespace MagicOnion.API.ECS
         private void Start()
         {
             InitEntity();
-
-            for (var i = 0; i < 10; i++)
-            {
-                var instance = manager.Instantiate(sharedEntity);
-                
-                manager.SetComponentData(instance, new Translation {Value = (float3)Random.insideUnitSphere * 5f});
-                manager.SetComponentData(instance, new Rotation {Value = Random.rotation});
-                manager.SetComponentData(instance, new LifeTime {Value = 1f});
-                manager.SetComponentData(instance, new Bullet {Direction = Random.rotation.eulerAngles.normalized});
-            }
+            
+            this.UpdateAsObservable()
+                .Subscribe(x =>
+                {
+                    if (Input.GetKeyDown(KeyCode.P))
+                    {
+                        GenerateBullet();
+                    }
+                });
         }
 
         private void InitEntity()
         {
             manager = World.Active.EntityManager;
-            
+
             archetype = manager.CreateArchetype
             (
                 ComponentType.ReadWrite<Translation>(),
                 ComponentType.ReadWrite<Rotation>(),
-                ComponentType.ReadWrite<LocalToWorld>(),
-                ComponentType.ReadOnly<RenderMesh>(),
-                ComponentType.ReadWrite<LifeTime>(),
-                ComponentType.ReadWrite<Bullet>()
+                ComponentType.ReadWrite<LocalToWorld>(), 
+                ComponentType.ReadOnly<RenderMesh>()
             );
             
             sharedEntity = manager.CreateEntity(archetype);
             manager.SetSharedComponentData(sharedEntity, renderMesh);
+        }
+
+        private void GenerateBullet(float lifeTime = 1f)
+        {
+            var instance = manager.Instantiate(sharedEntity);
+                
+            manager.SetComponentData(instance, new Translation {Value = (float3)Random.insideUnitSphere * 5f});
+            manager.SetComponentData(instance, new Rotation {Value = Random.rotation});
+            manager.AddComponentData(instance, new LifeTime {Value = lifeTime});
+            manager.AddComponentData(instance, new Bullet {Direction = Random.rotation.eulerAngles.normalized});
         }
     }
 }

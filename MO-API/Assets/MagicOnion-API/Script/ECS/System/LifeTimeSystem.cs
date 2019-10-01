@@ -25,7 +25,6 @@ namespace Script.ECS.System
             };
 
             var jobHandle = lifeTimeJob.Schedule(this, inputDeps);
-            
             //JobからCommandBufferに書き込む場合、AddJobHandleForProducerを使用してそのJobをバッファーシステムの依存関係リストに注入する必要がある。
             endSimulationEntityCommandBufferSystem.AddJobHandleForProducer(jobHandle);
             return jobHandle;
@@ -39,7 +38,7 @@ namespace Script.ECS.System
 
             public void Execute(Entity entity, int index, ref LifeTime lifeTime)
             {
-                if (lifeTime.Value < 0.0f) 
+                if (lifeTime.Value < 0.0f)
                     CommandBuffer.DestroyEntity(index, entity);
                 else
                     lifeTime.Value -= DeltaTime;

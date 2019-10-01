@@ -776,6 +776,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 286511902}
+  - component: {fileID: 286511901}
   m_Layer: 0
   m_Name: ECS Tester
   m_TagString: Untagged
@@ -783,6 +784,25 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &286511901
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 286511900}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8c201a3206cf0648924607b6eba66cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  renderMesh:
+    mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+    material: {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+    subMesh: 0
+    layer: 0
+    castShadows: 0
+    receiveShadows: 0
 --- !u!4 &286511902
 Transform:
   m_ObjectHideFlags: 0
