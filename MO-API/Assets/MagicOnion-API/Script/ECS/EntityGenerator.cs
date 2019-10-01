@@ -1,4 +1,6 @@
-﻿using Script.ECS.Component;
+﻿using System;
+using Script.ECS.Component;
+using ServerShared.Utility;
 using UniRx;
 using UniRx.Async;
 using UniRx.Triggers;
@@ -14,7 +16,7 @@ namespace MagicOnion.API.ECS
     public class EntityGenerator : MonoBehaviour
     {
         [SerializeField] 
-        private RenderMesh renderMesh = default;
+        private RenderMesh bulletMesh = default;
         
         private EntityManager manager;
         private EntityArchetype archetype;
@@ -27,7 +29,7 @@ namespace MagicOnion.API.ECS
             PlayerLoopHelper.Initialize(ref playerLoop);
         }
 
-        private void Start()
+        private void Awake()
         {
             InitEntity();
             
@@ -39,6 +41,9 @@ namespace MagicOnion.API.ECS
                         GenerateBullet();
                     }
                 });
+
+            for (var i = 0; i < 4; i++) 
+                GeneratePlayerScore(i);
         }
 
         private void InitEntity()
@@ -54,7 +59,7 @@ namespace MagicOnion.API.ECS
             );
             
             sharedEntity = manager.CreateEntity(archetype);
-            manager.SetSharedComponentData(sharedEntity, renderMesh);
+            manager.SetSharedComponentData(sharedEntity, bulletMesh);
         }
 
         private void GenerateBullet(float lifeTime = 1f)
@@ -64,7 +69,35 @@ namespace MagicOnion.API.ECS
             manager.SetComponentData(instance, new Translation {Value = (float3)Random.insideUnitSphere * 5f});
             manager.SetComponentData(instance, new Rotation {Value = Random.rotation});
             manager.AddComponentData(instance, new LifeTime {Value = lifeTime});
-            manager.AddComponentData(instance, new Bullet {Direction = Random.rotation.eulerAngles.normalized});
+            manager.AddComponentData(instance, new Bullet
+            {
+                Direction = Random.rotation.eulerAngles.normalized,
+                Power = WeaponParser(WeaponType.Rifle)
+            });
+        }
+
+        //todo 誰が敵を殺したかでスコアを増減させる。
+        private void GeneratePlayerScore(int index)
+        {
+            var playerArchetype = manager.CreateArchetype(ComponentType.ReadWrite<PlayerIdentifier>());
+            var entity = manager.CreateEntity(playerArchetype);
+
+            manager.SetComponentData(entity, new PlayerIdentifier {Index = index, Score = 0});
+        }
+
+        private static int WeaponParser(WeaponType weaponType)
+        {
+            switch (weaponType)
+            {
+                case WeaponType.Pistol:
+                    return 10;
+                case WeaponType.Rifle:
+                    return 30;
+                case WeaponType.SMG:
+                    return 15;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(weaponType), weaponType, null);
+            }
         }
     }
 }

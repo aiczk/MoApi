@@ -6,5 +6,6 @@ namespace Script.ECS.Component
     public struct Bullet : IComponentData
     {
         public float3 Direction;
+        public int Power;
     }
 }
