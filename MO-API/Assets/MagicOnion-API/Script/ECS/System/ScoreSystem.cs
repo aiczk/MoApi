@@ -1,50 +1,63 @@
 ﻿using Script.ECS.Component;
 using Unity.Burst;
 using Unity.Collections;
+using Unity.Collections.LowLevel.Unsafe;
 using Unity.Entities;
 using Unity.Jobs;
+using NotImplementedException = System.NotImplementedException;
 
 namespace Script.ECS.System
 {
     public class ScoreSystem : JobComponentSystem
     {
+        private EntityQuery deadQuery;
+        
+        protected override void OnCreate()
+        {
+            deadQuery = GetEntityQuery(ComponentType.ReadOnly<Dead>());
+        }
+
         protected override JobHandle OnUpdate(JobHandle inputDeps)
         {
             var killCount = new NativeArray<int>(4, Allocator.TempJob);
             
-            var writeScoreJob = new WriteScoreJob
+            var writeKillCountJob = new WriteCountJob
             {
-                WriteCount = killCount
+                DeadArchetypeChunkComponentType = GetArchetypeChunkComponentType<Dead>(true),
+                KillCounts = killCount
             };
             
-            var readScoreJob = new ReadScoreJob
+            var readKillCountJob = new ReadCountJob
             {
                 ReadCount = killCount
             };
-            
-            var writeHandle = writeScoreJob.Schedule(this);
-            var readHandle = readScoreJob.Schedule(this, writeHandle);
+
+            var writeHandle = writeKillCountJob.Schedule(deadQuery);
+            var readHandle = readKillCountJob.Schedule(this, writeHandle);
             JobHandle.ScheduleBatchedJobs();
             return readHandle;
         }
 
         [BurstCompile]
-        private struct WriteScoreJob : IJobForEach<Enemy, Dead>
+        private struct WriteCountJob : IJobChunk
         {
-            [WriteOnly] public NativeArray<int> WriteCount;
-
-            public void Execute([ReadOnly] ref Enemy enemy, [ReadOnly] ref Dead dead)
+            [ReadOnly] public ArchetypeChunkComponentType<Dead> DeadArchetypeChunkComponentType;
+            [WriteOnly] public NativeArray<int> KillCounts;
+            
+            public void Execute(ArchetypeChunk chunk, int chunkIndex, int firstEntityIndex)
             {
-                if (!enemy.IsDead)
-                    return;
+                var deadArray = chunk.GetNativeArray(DeadArchetypeChunkComponentType);
 
-                var killedBy = dead.WhoKilled;
-                WriteCount[killedBy]++;
+                for (var i = 0; i < deadArray.Length; i++)
+                {
+                    var killedBy = deadArray[i].WhoKilled;
+                    KillCounts[killedBy]++;
+                }
             }
         }
 
         [BurstCompile]
-        private struct ReadScoreJob : IJobForEach<PlayerIdentifier>
+        private struct ReadCountJob : IJobForEach<PlayerIdentifier>
         {
             [ReadOnly, DeallocateOnJobCompletion] public NativeArray<int> ReadCount;
             

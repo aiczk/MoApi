@@ -5,6 +5,5 @@ namespace Script.ECS.Component
     public struct Enemy : IComponentData
     {
         public int Health;
-        public boolean IsDead;
     }
 }
