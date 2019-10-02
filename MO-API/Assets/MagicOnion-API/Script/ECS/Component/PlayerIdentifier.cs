@@ -6,6 +6,6 @@ namespace Script.ECS.Component
     public struct PlayerIdentifier : IComponentData
     {
         public int Index;
-        public int Score;
+        public int KillCount;
     }
 }

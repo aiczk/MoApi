@@ -6,6 +6,5 @@ namespace Script.ECS.Component
     {
         public int Health;
         public boolean IsDead;
-        public int WhoKilled;
     }
 }

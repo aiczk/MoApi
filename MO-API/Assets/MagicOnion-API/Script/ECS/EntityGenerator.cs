@@ -72,7 +72,8 @@ namespace MagicOnion.API.ECS
             manager.AddComponentData(instance, new Bullet
             {
                 Direction = Random.rotation.eulerAngles.normalized,
-                Power = WeaponParser(WeaponType.Rifle)
+                Power = WeaponParser(WeaponType.Rifle),
+                IsTouch = false
             });
         }
 
@@ -82,7 +83,18 @@ namespace MagicOnion.API.ECS
             var playerArchetype = manager.CreateArchetype(ComponentType.ReadWrite<PlayerIdentifier>());
             var entity = manager.CreateEntity(playerArchetype);
 
-            manager.SetComponentData(entity, new PlayerIdentifier {Index = index, Score = 0});
+            manager.SetComponentData(entity, new PlayerIdentifier {Index = index, KillCount = 0});
+        }
+
+        private void GenerateEnemy()
+        {
+            var enemyArchetype = manager.CreateArchetype(ComponentType.ReadWrite<Enemy>());
+            var entity = manager.CreateEntity(enemyArchetype);
+
+            manager.SetComponentData(entity, new Enemy
+            {
+                Health = 100
+            });
         }
 
         private static int WeaponParser(WeaponType weaponType)

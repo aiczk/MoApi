@@ -24,10 +24,9 @@ namespace Script.ECS.System
                 CommandBuffer = endSimulationEntityCommandBufferSystem.CreateCommandBuffer().ToConcurrent()
             };
 
-            var jobHandle = lifeTimeJob.Schedule(this, inputDeps);
-            //JobからCommandBufferに書き込む場合、AddJobHandleForProducerを使用してそのJobをバッファーシステムの依存関係リストに注入する必要がある。
-            endSimulationEntityCommandBufferSystem.AddJobHandleForProducer(jobHandle);
-            return jobHandle;
+            var lifeTimeJobHandle = lifeTimeJob.Schedule(this, inputDeps);
+            endSimulationEntityCommandBufferSystem.AddJobHandleForProducer(lifeTimeJobHandle);
+            return lifeTimeJobHandle;
         }
         
         [BurstCompile]
