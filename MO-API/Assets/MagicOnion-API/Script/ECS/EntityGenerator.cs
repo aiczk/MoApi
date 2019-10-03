@@ -9,6 +9,7 @@ using Unity.Mathematics;
 using Unity.Rendering;
 using Unity.Transforms;
 using UnityEngine;
+using Collision = Script.ECS.Component.Collision;
 using Physics = Script.ECS.Component.Physics;
 using Random = UnityEngine.Random;
 
@@ -16,8 +17,7 @@ namespace MagicOnion.API.ECS
 {
     public class EntityGenerator : MonoBehaviour
     {
-        [SerializeField] 
-        private RenderMesh bulletMesh = default;
+        [SerializeField] private RenderMesh bulletMesh = default;
         
         private EntityManager manager;
         private EntityArchetype archetype;
@@ -34,15 +34,6 @@ namespace MagicOnion.API.ECS
         {
             InitEntity();
             
-            this.UpdateAsObservable()
-                .Subscribe(x =>
-                {
-                    if (Input.GetKeyDown(KeyCode.P))
-                    {
-                        GenerateBullet();
-                    }
-                });
-
             for (var i = 0; i < 4; i++) 
                 GeneratePlayerScore(i);
             
@@ -100,6 +91,19 @@ namespace MagicOnion.API.ECS
                 CachedPosition = Vector3.zero,
                 Force = Vector3.down * 9.8f,
                 Mass = 1f
+            });
+
+            var collision = manager.Instantiate(sharedEntity);
+
+            manager.SetComponentData(collision, new Translation {Value = float3.zero});
+            manager.AddComponentData(collision, new Collision
+            {
+                Bounciness = 0f,
+                Friction = 1f,
+                Position = float3.zero,
+                Rotation = quaternion.identity,
+                CollisionType = CollisionType.Plane,
+                Size = new float2(10, 10)
             });
         }
 

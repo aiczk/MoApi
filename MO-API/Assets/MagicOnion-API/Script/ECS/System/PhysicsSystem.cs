@@ -51,12 +51,13 @@ namespace Script.ECS.System
 
                 for (var i = 0; i < physicsArray.Length; ++i, ++physicsPtr, ++translationPtr)
                 {
+                    //todo test
                     if (physicsPtr->CurrentPosition.y <= 0f)
                     {
                         physicsPtr->Force = Vector3.up * 9.8f;
                     }
                     
-                    if(physicsPtr->CurrentPosition.y > 10f)
+                    if(physicsPtr->CurrentPosition.y > 5f)
                     {
                         physicsPtr->Force = Vector3.down * 9.8f;
                     }
