@@ -10,21 +10,13 @@ namespace Script.ECS.System
 {
     public class ScoreSystem : JobComponentSystem
     {
-        private EntityQuery deadQuery;
-        
-        protected override void OnCreate()
-        {
-            deadQuery = GetEntityQuery(ComponentType.ReadOnly<Dead>());
-        }
-
         protected override JobHandle OnUpdate(JobHandle inputDeps)
         {
             var killCount = new NativeArray<int>(4, Allocator.TempJob);
             
             var writeKillCountJob = new WriteCountJob
             {
-                DeadArchetypeChunkComponentType = GetArchetypeChunkComponentType<Dead>(true),
-                KillCounts = killCount
+                WriteCount = killCount
             };
             
             var readKillCountJob = new ReadCountJob
@@ -32,27 +24,21 @@ namespace Script.ECS.System
                 ReadCount = killCount
             };
 
-            var writeHandle = writeKillCountJob.Schedule(deadQuery);
+            var writeHandle = writeKillCountJob.Schedule(this);
             var readHandle = readKillCountJob.Schedule(this, writeHandle);
             JobHandle.ScheduleBatchedJobs();
             return readHandle;
         }
 
         [BurstCompile]
-        private struct WriteCountJob : IJobChunk
+        private struct WriteCountJob : IJobForEach<Dead>
         {
-            [ReadOnly] public ArchetypeChunkComponentType<Dead> DeadArchetypeChunkComponentType;
-            [WriteOnly] public NativeArray<int> KillCounts;
+            [WriteOnly] public NativeArray<int> WriteCount;
             
-            public void Execute(ArchetypeChunk chunk, int chunkIndex, int firstEntityIndex)
+            public void Execute([ReadOnly] ref Dead dead)
             {
-                var deadArray = chunk.GetNativeArray(DeadArchetypeChunkComponentType);
-
-                for (var i = 0; i < deadArray.Length; i++)
-                {
-                    var killedBy = deadArray[i].WhoKilled;
-                    KillCounts[killedBy]++;
-                }
+                var killedBy = dead.WhoKilled;
+                WriteCount[killedBy]++;
             }
         }
 

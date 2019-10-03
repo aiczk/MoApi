@@ -9,6 +9,7 @@ using Unity.Mathematics;
 using Unity.Rendering;
 using Unity.Transforms;
 using UnityEngine;
+using Physics = Script.ECS.Component.Physics;
 using Random = UnityEngine.Random;
 
 namespace MagicOnion.API.ECS
@@ -44,6 +45,8 @@ namespace MagicOnion.API.ECS
 
             for (var i = 0; i < 4; i++) 
                 GeneratePlayerScore(i);
+            
+            GeneratePhysics();
         }
 
         private void InitEntity()
@@ -86,14 +89,18 @@ namespace MagicOnion.API.ECS
             manager.SetComponentData(entity, new PlayerIdentifier {Index = index, KillCount = 0});
         }
 
-        private void GenerateEnemy()
+        private void GeneratePhysics()
         {
-            var enemyArchetype = manager.CreateArchetype(ComponentType.ReadWrite<Enemy>());
-            var entity = manager.CreateEntity(enemyArchetype);
+            var instance = manager.Instantiate(sharedEntity);
 
-            manager.SetComponentData(entity, new Enemy
+            var initPos = (float3) Random.insideUnitSphere * 5f;
+            manager.SetComponentData(instance, new Translation {Value = initPos});
+            manager.SetComponentData(instance, new Rotation {Value = Random.rotation});
+            manager.AddComponentData(instance, new Physics
             {
-                Health = 100
+                CurrentPosition = initPos,
+                CachedPosition = initPos,
+                Power = 0.1f
             });
         }
 
