@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
@@ -12,7 +13,6 @@ using Physics = Script.ECS.Component.Physics;
 
 namespace Script.ECS.System
 {
-    [UpdateBefore(typeof(RenderMeshSystemV2))]
     public class PhysicsSystem : JobComponentSystem
     {
         private EntityQuery entityQuery;
@@ -51,11 +51,23 @@ namespace Script.ECS.System
 
                 for (var i = 0; i < physicsArray.Length; ++i, ++physicsPtr, ++translationPtr)
                 {
+                    if (physicsPtr->CurrentPosition.y <= 0f)
+                    {
+                        physicsPtr->Force = Vector3.up * 9.8f;
+                    }
+                    
+                    if(physicsPtr->CurrentPosition.y > 10f)
+                    {
+                        physicsPtr->Force = Vector3.down * 9.8f;
+                    }
+
                     var tempPosition = physicsPtr->CurrentPosition;
+                    var calc = physicsPtr->CurrentPosition - physicsPtr->CachedPosition;
+                    
                     translationPtr->Value =
-                        physicsPtr->CurrentPosition =
-                            (physicsPtr->CurrentPosition - physicsPtr->CachedPosition) + physicsPtr->Power / DeltaTime * DeltaTime;
-                        
+                        physicsPtr->CurrentPosition +=
+                             calc + physicsPtr->Force * DeltaTime * DeltaTime / physicsPtr->Mass;
+
                     physicsPtr->CachedPosition = tempPosition;
                 }
             }

@@ -93,14 +93,13 @@ namespace MagicOnion.API.ECS
         {
             var instance = manager.Instantiate(sharedEntity);
 
-            var initPos = (float3) Random.insideUnitSphere * 5f;
-            manager.SetComponentData(instance, new Translation {Value = initPos});
-            manager.SetComponentData(instance, new Rotation {Value = Random.rotation});
+            manager.SetComponentData(instance, new Translation {Value = float3.zero});
             manager.AddComponentData(instance, new Physics
             {
-                CurrentPosition = initPos,
-                CachedPosition = initPos,
-                Power = 0.1f
+                CurrentPosition = Vector3.zero,
+                CachedPosition = Vector3.zero,
+                Force = Vector3.down * 9.8f,
+                Mass = 1f
             });
         }
 
