@@ -34,8 +34,8 @@ namespace MagicOnion.API.ECS
         {
             InitEntity();
             
-            for (var i = 0; i < 4; i++) 
-                GeneratePlayerScore(i);
+            //for (var i = 0; i < 4; i++) 
+            //    GeneratePlayerScore(i);
             
             GeneratePhysics();
         }
@@ -89,11 +89,11 @@ namespace MagicOnion.API.ECS
             {
                 CurrentPosition = Vector3.zero,
                 CachedPosition = Vector3.zero,
-                Force = Vector3.down * 9.8f,
-                Mass = 1f
+                Force = Vector3.up * 9.8f,
+                Mass = 5f
             });
 
-            var collision = manager.Instantiate(sharedEntity);
+/*            var collision = manager.Instantiate(sharedEntity);
 
             manager.SetComponentData(collision, new Translation {Value = float3.zero});
             manager.AddComponentData(collision, new Collision
@@ -104,7 +104,7 @@ namespace MagicOnion.API.ECS
                 Rotation = quaternion.identity,
                 CollisionType = CollisionType.Plane,
                 Size = new float2(10, 10)
-            });
+            });*/
         }
 
         private static int WeaponParser(WeaponType weaponType)

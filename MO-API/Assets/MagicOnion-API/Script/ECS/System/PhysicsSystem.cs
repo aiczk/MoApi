@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using Script.ECS.Component;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
@@ -19,19 +20,34 @@ namespace Script.ECS.System
         
         protected override void OnCreate()
         {
-            entityQuery = GetEntityQuery(ComponentType.ReadWrite<Physics>(), ComponentType.ReadWrite<Translation>());
+            entityQuery = GetEntityQuery
+            (
+                ComponentType.ReadWrite<Physics>(),
+                ComponentType.ReadWrite<Translation>(),
+                ComponentType.Exclude<Bullet>()
+            );
         }
 
         protected override JobHandle OnUpdate(JobHandle inputDeps)
         {
+            var physicsArchetype = GetArchetypeChunkComponentType<Physics>();
+            
             var physicsJob = new PhysicJob
             {
-                PhysicsArchetypeChunkComponentType = GetArchetypeChunkComponentType<Physics>(),
+                PhysicsArchetypeChunkComponentType = physicsArchetype,
                 TranslationArchetypeChunkComponentType = GetArchetypeChunkComponentType<Translation>(),
                 DeltaTime = Time.deltaTime
             };
-
-            return physicsJob.Schedule(entityQuery, inputDeps);
+            
+            var forceJob = new ForceJob
+            {
+                PhysicsArchetypeChunkComponentType = physicsArchetype
+            };
+            
+            var physicHandle = physicsJob.Schedule(entityQuery,inputDeps);
+            var forceHandle = forceJob.Schedule(entityQuery, physicHandle);
+            
+            return forceHandle;
         }
         
         [BurstCompile]
@@ -51,17 +67,6 @@ namespace Script.ECS.System
 
                 for (var i = 0; i < physicsArray.Length; ++i, ++physicsPtr, ++translationPtr)
                 {
-                    //todo test
-                    if (physicsPtr->CurrentPosition.y <= 0f)
-                    {
-                        physicsPtr->Force = Vector3.up * 9.8f;
-                    }
-                    
-                    if(physicsPtr->CurrentPosition.y > 5f)
-                    {
-                        physicsPtr->Force = Vector3.down * 9.8f;
-                    }
-
                     var tempPosition = physicsPtr->CurrentPosition;
                     var calc = physicsPtr->CurrentPosition - physicsPtr->CachedPosition;
                     
@@ -70,6 +75,30 @@ namespace Script.ECS.System
                              calc + physicsPtr->Force * DeltaTime * DeltaTime / physicsPtr->Mass;
 
                     physicsPtr->CachedPosition = tempPosition;
+                }
+            }
+        }
+
+        [BurstCompile]
+        private struct ForceJob : IJobChunk
+        {
+            public ArchetypeChunkComponentType<Physics> PhysicsArchetypeChunkComponentType;
+            
+            public unsafe void Execute(ArchetypeChunk chunk, int chunkIndex, int firstEntityIndex)
+            {
+                var physicsArray = chunk.GetNativeArray(PhysicsArchetypeChunkComponentType);
+                var physicsPtr = (Physics*) physicsArray.GetUnsafePtr();
+
+                for (var i = 0; i < physicsArray.Length; ++i, ++physicsPtr)
+                {
+                    if (math.all(physicsPtr->Force <= 0f))
+                    {
+                        physicsPtr->Force = float3.zero;
+                        physicsPtr->CachedPosition = physicsPtr->CurrentPosition;
+                        return;
+                    }
+                    
+                    physicsPtr->Force -= 0.01f;
                 }
             }
         }

@@ -1,9 +1,11 @@
-﻿using Unity.Entities;
+﻿using System;
+using Unity.Entities;
 using Unity.Mathematics;
-using Unity.Transforms;
+// ReSharper disable InconsistentNaming
 
 namespace Script.ECS.Component
 {
+    [Serializable]
     public struct Physics : IComponentData
     {
         public float Mass;
