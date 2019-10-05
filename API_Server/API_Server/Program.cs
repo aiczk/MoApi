@@ -26,7 +26,6 @@ namespace _Server
                 Ports =
                 {
                     new ServerPort(host, 10000, ServerCredentials.Insecure),
-                    new ServerPort(host, 10123, ServerCredentials.Insecure)
                 }
             };
             

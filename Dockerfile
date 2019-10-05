@@ -3,8 +3,8 @@ WORKDIR /app
 
 FROM microsoft/dotnet:2.2-sdk AS build
 WORKDIR /src
-COPY ChatApp.Server/ChatApp.Server.csproj /ChatApp.Server/
-RUN dotnet restore /ChatApp.Server/ChatApp.Server.csproj
+COPY API_Server/API_Server/API_Server.csproj /ChatApp.Server/
+RUN dotnet restore /API_Server/API_Server.csproj
 COPY . .
 WORKDIR /src/ChatApp.Server
 RUN dotnet build -c Release -o /app
@@ -15,6 +15,6 @@ RUN dotnet publish -c Release -o /app
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app .
-ENTRYPOINT ["dotnet", "ChatApp.Server.dll"]
+ENTRYPOINT ["dotnet", "API_Server.dll"]
 
 EXPOSE 12345
