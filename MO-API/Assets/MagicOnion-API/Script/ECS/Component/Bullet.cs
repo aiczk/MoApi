@@ -7,5 +7,6 @@ namespace Script.ECS.Component
     {
         public boolean IsTouch;
         public int Power;
+        public float FallUntil;
     }
 }

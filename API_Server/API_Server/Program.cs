@@ -2,6 +2,7 @@
 using _Server.Script.Utility;
 using Grpc.Core;
 using Grpc.Core.Logging;
+using MagicOnion.Redis;
 using MagicOnion.Server;
 using MessagePack.Resolvers;
 

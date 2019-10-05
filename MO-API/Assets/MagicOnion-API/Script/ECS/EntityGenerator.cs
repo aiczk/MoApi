@@ -34,10 +34,9 @@ namespace MagicOnion.API.ECS
         {
             InitEntity();
             
+            //todo クソ重い(0.05sec)
             //for (var i = 0; i < 4; i++) 
             //    GeneratePlayerScore(i);
-            
-            //GeneratePhysics();
         }
 
         private void InitEntity()
@@ -61,12 +60,12 @@ namespace MagicOnion.API.ECS
             var instance = manager.Instantiate(sharedEntity);
             
             manager.SetComponentData(instance, new Translation {Value = position});
-            manager.SetComponentData(instance, new Rotation {Value = quaternion.identity});
             manager.AddComponentData(instance, new LifeTime {Value = lifeTime});
             manager.AddComponentData(instance, new Bullet
             {
                 Power = WeaponParser(currentWeapon),
-                IsTouch = false
+                IsTouch = false,
+                FallUntil = 3f
             });
             manager.AddComponentData(instance, new Physics
             {
@@ -75,7 +74,7 @@ namespace MagicOnion.API.ECS
                 
                 //よくある弾道にする  時間をphysicsにキャッシュさせて重力をかける
                 Force = Vector3.Normalize(direction) * 9.8f,
-                Mass = 1f
+                Mass = 1f,
             });
         }
 
@@ -86,20 +85,6 @@ namespace MagicOnion.API.ECS
             var entity = manager.CreateEntity(playerArchetype);
 
             manager.SetComponentData(entity, new Player {Index = index, KillCount = 0});
-        }
-
-        private void GeneratePhysics()
-        {
-            var instance = manager.Instantiate(sharedEntity);
-
-            manager.SetComponentData(instance, new Translation {Value = float3.zero});
-            manager.AddComponentData(instance, new Physics
-            {
-                CurrentPosition = Vector3.zero,
-                CachedPosition = Vector3.zero,
-                Force = Vector3.up * 9.8f,
-                Mass = 3f
-            });
         }
 
         private static int WeaponParser(WeaponType weaponType)
