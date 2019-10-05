@@ -767,56 +767,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 269899602}
   m_CullTransparentMesh: 0
---- !u!1 &286511900
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 286511902}
-  - component: {fileID: 286511901}
-  m_Layer: 0
-  m_Name: ECS Tester
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
-  m_IsActive: 1
---- !u!114 &286511901
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 286511900}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e8c201a3206cf0648924607b6eba66cd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  bulletMesh:
-    mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
-    material: {fileID: 2100000, guid: e05e18b3808eb7c4e8df57e95d6d738c, type: 2}
-    subMesh: 0
-    layer: 0
-    castShadows: 0
-    receiveShadows: 0
---- !u!4 &286511902
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 286511900}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 4
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &296866395
 GameObject:
   m_ObjectHideFlags: 0
@@ -1183,6 +1133,7 @@ GameObject:
   - component: {fileID: 518291068}
   - component: {fileID: 518291072}
   - component: {fileID: 518291069}
+  - component: {fileID: 518291075}
   m_Layer: 0
   m_Name: Online
   m_TagString: System_Online
@@ -1306,6 +1257,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c866ac0313be69f4ab75e1e49a4be159, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &518291075
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 518291065}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8c201a3206cf0648924607b6eba66cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bulletMesh:
+    mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+    material: {fileID: 2100000, guid: e05e18b3808eb7c4e8df57e95d6d738c, type: 2}
+    subMesh: 0
+    layer: 0
+    castShadows: 0
+    receiveShadows: 0
 --- !u!1 &534669902
 GameObject:
   m_ObjectHideFlags: 0
@@ -1453,7 +1423,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1045121119
 GameObject:
@@ -2170,7 +2140,7 @@ RectTransform:
   - {fileID: 1384640621}
   - {fileID: 1732086705}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}

@@ -10,7 +10,6 @@ namespace ServerShared.MessagePackObject
     public class PlayerIdentifier
     {
         [Key(0)] public string Name { get; set; }
-
         [Key(1)] public string Id { get; set; }
     }
 
@@ -18,7 +17,6 @@ namespace ServerShared.MessagePackObject
     public struct PositionParameter
     {
         [Key(0)] public int Index { get; set; }
-
         [Key(1)] public Vector3 Position { get; set; }
     }
 
@@ -26,7 +24,6 @@ namespace ServerShared.MessagePackObject
     public struct RotationParameter
     {
         [Key(0)] public int Index { get; set; }
-
         [Key(1)] public Quaternion Rotation { get; set; }
     }
 
@@ -34,7 +31,6 @@ namespace ServerShared.MessagePackObject
     public class MatchData
     {
         [Key(0)] public string RoomName { get; set; }
-
         [Key(1)] public int Count { get; set; }
 
         public MatchData(string roomName, int count)
@@ -54,9 +50,7 @@ namespace ServerShared.MessagePackObject
     public struct DroppedItem
     {
         [Key(0)] public int RandomIndex { get; set; }
-        
         [Key(1)] public DroppedItemType DroppedItemType { get; set; }
-        
         [Key(2)] public Vector3 Position { get; set; }
 
         public DroppedItem(int randomIndex, DroppedItemType droppedItemType, Vector3 position)
@@ -71,9 +65,7 @@ namespace ServerShared.MessagePackObject
     public struct WeaponParameter
     {
         [Key(0)] public int Index { get; set; }
-
         [Key(1)] public WeaponType Main { get; set; }
-
         [Key(2)] public WeaponType Sub { get; set; }
     }
 
@@ -81,15 +73,14 @@ namespace ServerShared.MessagePackObject
     public struct ShotParameter
     {
         [Key(0)] public int Index { get; set; }
-
-        [Key(1)] public Vector3 Direction { get; set; }
+        [Key(1)] public Vector3 Position { get; set; }
+        [Key(2)] public Quaternion Rotation { get; set; }
     }
 
     [MessagePackObject]
     public struct EquipmentParameter
     {
         [Key(0)] public int Index { get; set; }
-
         [Key(1)] public WeaponType MainEquipment { get; set; }
     }
 }

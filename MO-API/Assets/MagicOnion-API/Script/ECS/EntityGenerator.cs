@@ -74,7 +74,7 @@ namespace MagicOnion.API.ECS
                 CurrentPosition = position,
                 
                 //よくある弾道にする  時間をphysicsにキャッシュさせて重力をかける
-                Force = Vector3.forward * 9.8f,
+                Force = Vector3.Normalize(direction) * 9.8f,
                 Mass = 1f
             });
         }

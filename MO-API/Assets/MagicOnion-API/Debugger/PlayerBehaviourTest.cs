@@ -37,7 +37,8 @@ namespace Debugger
                 .Subscribe(x =>
                 {
                     Debug.Log($"プレイヤー {x.Index.ToString()}が射撃しました。");
-                    entityGenerator.GenerateBullet(float3.zero, x.Direction, WeaponType.Pistol, 5f);
+                    var forward = x.Rotation * Vector3.forward;
+                    entityGenerator.GenerateBullet(x.Position, forward, WeaponType.Pistol, 5f);
                 });
 
             playerBehaviour

@@ -91,10 +91,13 @@ namespace Debugger
 
                     if (Input.GetMouseButtonDown(0))
                     {
+                        var transform1 = transform;
+                        
                         var shot = new ShotParameter
                         {
                             Index = playerIndex,
-                            Direction = transform.forward
+                            Position = transform1.position,
+                            Rotation = transform1.rotation
                         };
                         
                         await behaviour.Shot(shot);
