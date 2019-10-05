@@ -23,8 +23,7 @@ namespace Script.ECS.System
             entityQuery = GetEntityQuery
             (
                 ComponentType.ReadWrite<Physics>(),
-                ComponentType.ReadWrite<Translation>(),
-                ComponentType.Exclude<Bullet>()
+                ComponentType.ReadWrite<Translation>()
             );
         }
 
@@ -38,16 +37,9 @@ namespace Script.ECS.System
                 TranslationArchetypeChunkComponentType = GetArchetypeChunkComponentType<Translation>(),
                 DeltaTime = Time.deltaTime
             };
-            
-            var forceJob = new ForceJob
-            {
-                PhysicsArchetypeChunkComponentType = physicsArchetype
-            };
-            
+
             var physicHandle = physicsJob.Schedule(entityQuery,inputDeps);
-            var forceHandle = forceJob.Schedule(entityQuery, physicHandle);
-            
-            return forceHandle;
+            return physicHandle;
         }
         
         [BurstCompile]
@@ -75,30 +67,6 @@ namespace Script.ECS.System
                              calc + physicsPtr->Force * DeltaTime * DeltaTime / physicsPtr->Mass;
 
                     physicsPtr->CachedPosition = tempPosition;
-                }
-            }
-        }
-
-        [BurstCompile]
-        private struct ForceJob : IJobChunk
-        {
-            public ArchetypeChunkComponentType<Physics> PhysicsArchetypeChunkComponentType;
-            
-            public unsafe void Execute(ArchetypeChunk chunk, int chunkIndex, int firstEntityIndex)
-            {
-                var physicsArray = chunk.GetNativeArray(PhysicsArchetypeChunkComponentType);
-                var physicsPtr = (Physics*) physicsArray.GetUnsafePtr();
-
-                for (var i = 0; i < physicsArray.Length; ++i, ++physicsPtr)
-                {
-                    if (math.all(physicsPtr->Force <= 0f))
-                    {
-                        physicsPtr->Force = float3.zero;
-                        physicsPtr->CachedPosition = physicsPtr->CurrentPosition;
-                        return;
-                    }
-                    
-                    physicsPtr->Force -= 0.01f;
                 }
             }
         }

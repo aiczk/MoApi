@@ -37,7 +37,7 @@ namespace MagicOnion.API.ECS
             //for (var i = 0; i < 4; i++) 
             //    GeneratePlayerScore(i);
             
-            GeneratePhysics();
+            //GeneratePhysics();
         }
 
         private void InitEntity()
@@ -56,28 +56,36 @@ namespace MagicOnion.API.ECS
             manager.SetSharedComponentData(sharedEntity, bulletMesh);
         }
 
-        private void GenerateBullet(float lifeTime = 1f)
+        public void GenerateBullet(float3 position, float3 direction, WeaponType currentWeapon, float lifeTime)
         {
             var instance = manager.Instantiate(sharedEntity);
-                
-            manager.SetComponentData(instance, new Translation {Value = (float3)Random.insideUnitSphere * 5f});
-            manager.SetComponentData(instance, new Rotation {Value = Random.rotation});
+            
+            manager.SetComponentData(instance, new Translation {Value = position});
+            manager.SetComponentData(instance, new Rotation {Value = quaternion.identity});
             manager.AddComponentData(instance, new LifeTime {Value = lifeTime});
             manager.AddComponentData(instance, new Bullet
             {
-                Direction = Random.rotation.eulerAngles.normalized,
-                Power = WeaponParser(WeaponType.Rifle),
+                Power = WeaponParser(currentWeapon),
                 IsTouch = false
+            });
+            manager.AddComponentData(instance, new Physics
+            {
+                CachedPosition = position,
+                CurrentPosition = position,
+                
+                //よくある弾道にする  時間をphysicsにキャッシュさせて重力をかける
+                Force = Vector3.forward * 9.8f,
+                Mass = 1f
             });
         }
 
         //todo 誰が敵を殺したかでスコアを増減させる。
         private void GeneratePlayerScore(int index)
         {
-            var playerArchetype = manager.CreateArchetype(ComponentType.ReadWrite<PlayerIdentifier>());
+            var playerArchetype = manager.CreateArchetype(ComponentType.ReadWrite<Player>());
             var entity = manager.CreateEntity(playerArchetype);
 
-            manager.SetComponentData(entity, new PlayerIdentifier {Index = index, KillCount = 0});
+            manager.SetComponentData(entity, new Player {Index = index, KillCount = 0});
         }
 
         private void GeneratePhysics()
@@ -90,21 +98,8 @@ namespace MagicOnion.API.ECS
                 CurrentPosition = Vector3.zero,
                 CachedPosition = Vector3.zero,
                 Force = Vector3.up * 9.8f,
-                Mass = 5f
+                Mass = 3f
             });
-
-/*            var collision = manager.Instantiate(sharedEntity);
-
-            manager.SetComponentData(collision, new Translation {Value = float3.zero});
-            manager.AddComponentData(collision, new Collision
-            {
-                Bounciness = 0f,
-                Friction = 1f,
-                Position = float3.zero,
-                Rotation = quaternion.identity,
-                CollisionType = CollisionType.Plane,
-                Size = new float2(10, 10)
-            });*/
         }
 
         private static int WeaponParser(WeaponType weaponType)

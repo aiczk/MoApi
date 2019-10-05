@@ -43,14 +43,14 @@ namespace Script.ECS.System
         }
 
         [BurstCompile]
-        private struct ReadCountJob : IJobForEach<PlayerIdentifier>
+        private struct ReadCountJob : IJobForEach<Player>
         {
             [ReadOnly, DeallocateOnJobCompletion] public NativeArray<int> ReadCount;
             
-            public void Execute(ref PlayerIdentifier playerIdentifier)
+            public void Execute(ref Player player)
             {
-                var index = playerIdentifier.Index;
-                playerIdentifier.KillCount += ReadCount[index];
+                var index = player.Index;
+                player.KillCount += ReadCount[index];
             }
         }
     }

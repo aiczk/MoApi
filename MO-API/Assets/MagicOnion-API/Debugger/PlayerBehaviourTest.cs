@@ -1,29 +1,28 @@
 ﻿using System;
 using MagicOnion.API;
+using MagicOnion.API.ECS;
+using ServerShared.Utility;
 using UniRx;
-using Unity.Collections;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace Debugger
 {
-    //todo nativeQueueで弾の管理をする。 ECS使ってもいいかも?
-    //todo 置かれたアイテムの管理はどうするか NativeList?
-    //武器の変更/装備の変更/射撃/リロードはAnimation用。
     public class PlayerBehaviourTest : MonoBehaviour
     {
         private PlayerBehaviour playerBehaviour;
-        //private NativeList<int> items = new NativeList<int>(Allocator.Persistent);
+        private EntityGenerator entityGenerator;
         
         private void Awake()
         {
             playerBehaviour = GetComponent<PlayerBehaviour>();
+            entityGenerator = GetComponent<EntityGenerator>();
 
             playerBehaviour
                 .DropAsObservable
                 .Subscribe(x =>
                 {
                     Debug.Log($"アイテムID {x.RandomIndex.ToString()}が置かれました。");
-                    //items.Add(x.RandomIndex);
                 });
 
             playerBehaviour
@@ -31,7 +30,6 @@ namespace Debugger
                 .Subscribe(x =>
                 {
                     Debug.Log($"アイテムID {x.RandomIndex.ToString()}が取得されました。");
-                    //items.RemoveAtSwapBack(x.RandomIndex);
                 });
 
             playerBehaviour
@@ -39,6 +37,7 @@ namespace Debugger
                 .Subscribe(x =>
                 {
                     Debug.Log($"プレイヤー {x.Index.ToString()}が射撃しました。");
+                    entityGenerator.GenerateBullet(float3.zero, x.Direction, WeaponType.Pistol, 5f);
                 });
 
             playerBehaviour

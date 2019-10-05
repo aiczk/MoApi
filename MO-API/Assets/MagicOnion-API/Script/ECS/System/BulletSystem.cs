@@ -31,19 +31,16 @@ namespace Script.ECS.System
         }
         
         [BurstCompile]
-        private struct BulletJob : IJobForEachWithEntity<Bullet,Translation>
+        private struct BulletJob : IJobForEachWithEntity<Bullet>
         {
             [ReadOnly] public EntityCommandBuffer.Concurrent CommandBuffer;
 
-            public void Execute(Entity entity, int index, [ReadOnly] ref Bullet bullet, [WriteOnly] ref Translation translation)
+            public void Execute(Entity entity, int index, [ReadOnly] ref Bullet bullet)
             {
-                if (bullet.IsTouch)
-                {
-                    CommandBuffer.DestroyEntity(index, entity);
+                if (!bullet.IsTouch)
                     return;
-                }
                 
-                translation.Value += bullet.Direction;
+                CommandBuffer.DestroyEntity(index, entity);
             }
         }
     }
