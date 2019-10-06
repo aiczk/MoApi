@@ -3,10 +3,10 @@ WORKDIR /app
 
 FROM microsoft/dotnet:2.2-sdk AS build
 WORKDIR /src
-COPY API_Server/API_Server/API_Server.csproj /ChatApp.Server/
+COPY API_Server/API_Server/API_Server.csproj /API_Server/
 RUN dotnet restore /API_Server/API_Server.csproj
 COPY . .
-WORKDIR /src/ChatApp.Server
+WORKDIR /src/API_Server
 RUN dotnet build -c Release -o /app
 
 FROM build AS publish
