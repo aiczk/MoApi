@@ -3,7 +3,7 @@ WORKDIR /app
 
 FROM microsoft/dotnet:2.2-sdk AS build
 WORKDIR /src
-COPY API_Server.csproj /API_Server/
+COPY API_Server/API_Server/API_Server.csproj /API_Server/
 RUN dotnet restore /API_Server/API_Server.csproj
 COPY . .
 WORKDIR /src/API_Server
